@@ -1,5 +1,8 @@
-import { Audio } from "expo-av";
 import musicTempo from "music-tempo";
+import { Audio, AVPlaybackStatusSuccess } from "expo-av";
+
+const sleep = async (timeout: number) =>
+  new Promise((resolve) => setTimeout(resolve, timeout));
 
 export const prepareAudioCapabilities = async () => {
   const permissions = await Audio.getPermissionsAsync();
@@ -11,56 +14,61 @@ export const prepareAudioCapabilities = async () => {
   await Audio.setAudioModeAsync({
     allowsRecordingIOS: true,
     playsInSilentModeIOS: true,
+    staysActiveInBackground: true,
   });
 };
 
+type SampleRecording = {
+  sound: Audio.Sound;
+  uri: string;
+};
 export const captureAudioSample = async (
-  durationInSeconds = 5
-): Promise<string> => {
-  const recording = new Audio.Recording();
-
-  try {
-    const status = await recording.getStatusAsync();
-
-    if (!status.canRecord) {
-      await recording.prepareToRecordAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-      );
-    }
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        recording.stopAndUnloadAsync().then(() => resolve(recording.getURI()!));
-      }, durationInSeconds * 1000);
-    });
-  } catch (e) {
-    throw e;
+  durationInSeconds = 5,
+  soundOptions = {
+    isMuted: true,
   }
+): Promise<SampleRecording> => {
+  const recording = new Audio.Recording();
+  const status = await recording.getStatusAsync();
+  const durationInMilis = durationInSeconds * 1000;
+
+  if (!status.canRecord) {
+    const { ios, android } = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
+    await recording.prepareToRecordAsync({
+      isMeteringEnabled: true,
+      android: android,
+      ios: {
+        ...ios,
+        numberOfChannels: 1,
+        linearPCMIsFloat: true,
+        linearPCMIsBigEndian: true,
+        outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_MPEG4AAC,
+      },
+    } as Audio.RecordingOptions);
+  }
+
+  recording.startAsync();
+
+  await sleep(durationInMilis);
+  await recording.stopAndUnloadAsync();
+  const uri = await recording.getURI()!;
+  const { sound } = await recording.createNewLoadedSoundAsync(soundOptions);
+
+  return { sound, uri };
 };
 
-export const determineBPM = async (uri: string) => {
-  const sound = new Audio.Sound();
-
-  console.log("loading sound");
-  await sound.loadAsync({ uri });
-  console.log("loaded sound");
-
-  const audioBuffer = await new Promise<number[]>((resolve) => {
-    // non-interleaved IEEE754 32-bit linear PCM with a nominal range between -1 and +1
-    const audioData: number[] = [];
-    sound.setOnAudioSampleReceived((sample) => {
-      const channels = [sample.channels[0].frames, sample.channels[1].frames];
-      const totalFrames = channels[0].length;
-
-      for (let i = 0; i < totalFrames; i++) {
-        audioData[i] = (channels[0][i] + channels[1][i]) / 2;
+export const determineBPM = (sound: Audio.Sound) =>
+  new Promise((resolve) => {
+    const linearPCMData: number[] = [];
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if ((status as AVPlaybackStatusSuccess).didJustFinish) {
+        const { tempo } = new musicTempo(linearPCMData);
+        resolve(Math.ceil(tempo/2));
       }
-
-      resolve(audioData);
     });
+    sound.setOnAudioSampleReceived((sample) => {
+      linearPCMData.push(...sample.channels[0].frames);
+    });
+
+    sound.playAsync();
   });
-
-  console.log('sample data has been processed!')
-
-  return new musicTempo(audioBuffer);
-};

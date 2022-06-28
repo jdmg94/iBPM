@@ -34,14 +34,14 @@ export const captureAudioSample = async (
 
   if (!status.canRecord) {
     const { ios, android } = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
-    await recording.prepareToRecordAsync({
-      isMeteringEnabled: true,
+    await recording.prepareToRecordAsync({      
+      keepAudioActiveHint: true,
       android: android,
       ios: {
-        ...ios,
+        ...ios,        
         numberOfChannels: 1,
         linearPCMIsFloat: true,
-        linearPCMIsBigEndian: true,
+        linearPCMIsBigEndian: false,
         outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_MPEG4AAC,
       },
     } as Audio.RecordingOptions);
@@ -63,7 +63,7 @@ export const determineBPM = (sound: Audio.Sound) =>
     sound.setOnPlaybackStatusUpdate((status) => {
       if ((status as AVPlaybackStatusSuccess).didJustFinish) {
         const { tempo } = new musicTempo(linearPCMData);
-        resolve(Math.ceil(tempo/2));
+        resolve(Math.ceil(tempo));
       }
     });
     sound.setOnAudioSampleReceived((sample) => {

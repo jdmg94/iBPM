@@ -4,16 +4,17 @@ import Item, { BPMRecord, Separator } from "./Item";
 
 const data: BPMRecord[] = [
   { id: "1", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "2", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "3", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "4", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "5", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "6", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "7", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "8", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "9", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
-  { id: "10", label: "Last One!", bpm: 100, doubleTime: 200 },
+  // { id: "2", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  // { id: "3", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  // { id: "4", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  // { id: "5", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  // { id: "6", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  // { id: "7", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  // { id: "8", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  // { id: "9", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  // { id: "10", label: "Last One!", bpm: 100, doubleTime: 200 },
 ];
+
 
 const History = () => {
   const insets = useSafeAreaInsets();

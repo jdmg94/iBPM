@@ -4,14 +4,15 @@ import Lottie from "lottie-react-native";
 
 const Wrapper = styled.View`
   height: 120px;
-  position: relative;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ProcessingLoader = () => {
   const loader = useRef<Lottie>(null);
 
   useEffect(() => {
-    setTimeout(() => loader.current?.play(0))
+    setTimeout(() => loader.current?.play(0));
   }, []);
 
   return (
@@ -20,13 +21,7 @@ export const ProcessingLoader = () => {
         loop
         autoSize
         ref={loader}
-        source={require("../../../../assets/processing.json")}
-        style={{          
-          position: 'absolute',
-          top: -60,
-          left: -90,
-          transform: [{ scale: 0.9 }]
-        }}
+        source={require("../../../../assets/loading.json")}
       />
     </Wrapper>
   );

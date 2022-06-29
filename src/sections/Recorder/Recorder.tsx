@@ -7,30 +7,27 @@ import {
   useAnimatedGestureHandler,
 } from "react-native-reanimated";
 
+import Result from "./Result/Result";
+import { State, useAppState } from "../../Context";
 import { RecordingLoader, ProcessingLoader } from "./Loaders";
 import { Wrapper, Handle, Button, Label } from "./Recorder.styles";
-
-enum State {
-  IDLE,
-  RECORDING,
-  PROCESSING,
-  DONE,
-  ERROR,
-}
+import { captureAudioSample, determineBPM } from "../../AudioService";
 
 const Recorder = () => {
+  const [duration] = useState(8000);
+  const [result, setResult] = useState(0);
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState<State>(State.IDLE);
+  const { status, setStatus } = useAppState();
 
-  const translateY = useSharedValue(500);
+  const translateY = useSharedValue(350);
   const isDrawerOpen = useSharedValue(false);
   const animation = useAnimatedStyle(() => {
     if (status === State.IDLE && !isDrawerOpen.value) {
-      translateY.value = withSpring(500, {
+      translateY.value = withSpring(350, {
         overshootClamping: true,
       });
     } else {
-      translateY.value = withSpring(isDrawerOpen.value ? 0 : 420, {
+      translateY.value = withSpring(isDrawerOpen.value ? 0 : 250, {
         overshootClamping: true,
       });
     }
@@ -46,13 +43,12 @@ const Recorder = () => {
     },
     onActive: (event, context) => {
       const nextValue = context.startY + event.translationY;
-
-      if (nextValue >= 0 && nextValue <= 500) {
+      if (nextValue >= 0 && nextValue <= 350) {
         translateY.value = nextValue;
       }
     },
     onEnd: () => {
-      if (translateY.value > 300) {
+      if (translateY.value >= 150) {
         isDrawerOpen.value = false;
       } else {
         isDrawerOpen.value = true;
@@ -62,17 +58,29 @@ const Recorder = () => {
 
   useEffect(() => {
     switch (status) {
+      case State.IDLE:
+        setMessage("");
+        isDrawerOpen.value = false;
+        break;
       case State.RECORDING:
+        isDrawerOpen.value = false;
         setMessage("Capturing Audio Sample");
+        captureAudioSample(duration).then(({ sound }) => {
+          determineBPM(sound).then((bpm) => {
+            console.log('hello BPM!', bpm)
+            setResult(bpm);
+            setStatus(State.DONE);
+          }).catch(() => {
+            setStatus(State.IDLE)
+          });
+          setStatus(State.PROCESSING);
+        });
         break;
       case State.PROCESSING:
         setMessage("Calculating Beats");
-        setTimeout(() => {
-          setStatus(State.DONE);
-        }, 5000);
         break;
       case State.DONE:
-        setMessage("The BPM is Approximately:");
+        setMessage(" Approximately:");
         isDrawerOpen.value = true;
         break;
     }
@@ -87,10 +95,14 @@ const Recorder = () => {
         <Button onPress={() => setStatus(State.RECORDING)} />
       )}
       {status === State.RECORDING && (
-        <RecordingLoader onRest={() => setStatus(State.PROCESSING)} />
+        <RecordingLoader
+          duration={duration}
+          onRest={() => setStatus(State.PROCESSING)}
+        />
       )}
       {status === State.PROCESSING && <ProcessingLoader />}
       <Label>{message}</Label>
+      {status === State.DONE && <Result bpm={result} />}
     </Wrapper>
   );
 };

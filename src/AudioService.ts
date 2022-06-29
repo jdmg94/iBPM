@@ -23,14 +23,13 @@ type SampleRecording = {
   uri: string;
 };
 export const captureAudioSample = async (
-  durationInSeconds = 15,
+  duration = 15000,
   soundOptions = {
     isMuted: true,
   }
 ): Promise<SampleRecording> => {
   const recording = new Audio.Recording();
   const status = await recording.getStatusAsync();
-  const durationInMilis = durationInSeconds * 1000;
 
   if (!status.canRecord) {
     const { ios, android, web } = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
@@ -60,7 +59,7 @@ export const captureAudioSample = async (
 
   recording.startAsync();
 
-  await sleep(durationInMilis);
+  await sleep(duration);
   await recording.stopAndUnloadAsync();
   const uri = await recording.getURI()!;
   const { sound } = await recording.createNewLoadedSoundAsync(soundOptions);
@@ -68,13 +67,15 @@ export const captureAudioSample = async (
   return { sound, uri };
 };
 
-export const determineBPM = (sound: Audio.Sound) =>
+export const determineBPM = (sound: Audio.Sound): Promise<number> =>
   new Promise((resolve) => {
     const linearPCMData: number[] = [];
     sound.setOnPlaybackStatusUpdate((status) => {
       if ((status as AVPlaybackStatusSuccess).didJustFinish) {
-        const { tempo } = new musicTempo(linearPCMData);
-        resolve(Math.ceil(tempo));
+        sound.unloadAsync()
+
+        const { tempo } = new musicTempo(linearPCMData);        
+        resolve(Math.floor(tempo));
       }
     });
     sound.setOnAudioSampleReceived((sample) => {

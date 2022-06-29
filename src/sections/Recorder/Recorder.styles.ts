@@ -7,7 +7,7 @@ export const Wrapper = styled(Animated.View)`
   align-items: center;
   flex-direction: column;
   position: absolute;
-  height: 80%;
+  height: 60%;
   width: 100%;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
@@ -37,5 +37,14 @@ export const Label = styled.Text`
   font-weight: bold;
   font-size: 20px;
   color: #fff;
-  margin-top: 16px;
+  margin: 16px 0px;
 `;
+
+export const AdBanner = styled.View`
+  width: 100%;
+  flex: 1;
+  background-color: #4f44;
+  margin: 16px 0px;
+  align-items: center;
+  justify-content: center;
+`

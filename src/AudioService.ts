@@ -23,7 +23,7 @@ type SampleRecording = {
   uri: string;
 };
 export const captureAudioSample = async (
-  durationInSeconds = 5,
+  durationInSeconds = 15,
   soundOptions = {
     isMuted: true,
   }
@@ -33,18 +33,29 @@ export const captureAudioSample = async (
   const durationInMilis = durationInSeconds * 1000;
 
   if (!status.canRecord) {
-    const { ios, android } = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
-    await recording.prepareToRecordAsync({      
+    const { ios, android, web } = Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY;
+    const myOptions = {
+      numberOfChannels: 1,
+      linearPCMIsFloat: true,
+      linearPCMIsBigEndian: false,
+    };
+
+    await recording.prepareToRecordAsync({
       keepAudioActiveHint: true,
-      android: android,
+      web: {
+        ...web,
+        ...myOptions,
+      },
+      android: {
+        ...android,
+        ...myOptions,
+      },
       ios: {
-        ...ios,        
-        numberOfChannels: 1,
-        linearPCMIsFloat: true,
-        linearPCMIsBigEndian: false,
+        ...ios,
+        ...myOptions,
         outputFormat: Audio.RECORDING_OPTION_IOS_OUTPUT_FORMAT_MPEG4AAC,
       },
-    } as Audio.RecordingOptions);
+    });
   }
 
   recording.startAsync();

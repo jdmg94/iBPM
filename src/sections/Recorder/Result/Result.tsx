@@ -1,5 +1,7 @@
 import { FC } from "react";
-import { State, useAppState } from "../../../Context";
+
+import { useDispatch } from "../../../hooks";
+import { Status, updateStatus } from "../Recorder.slice";
 import {
   Button,
   Wrapper,
@@ -10,13 +12,14 @@ import {
 } from "./Result.styles";
 
 type ResultProps = {
-  bpm?: number
+  bpm?: number;
 };
 
 const Result: FC<ResultProps> = ({ bpm = 0 }) => {
-  const { setStatus } = useAppState();
+  const dispatch = useDispatch();
 
-  const updateState = (nextState: State) => () => setStatus(nextState);
+  const updateState = (nextState: Status) => () =>
+    dispatch(updateStatus(nextState));
 
   return (
     <Wrapper>
@@ -24,10 +27,10 @@ const Result: FC<ResultProps> = ({ bpm = 0 }) => {
         <Title>{bpm}</Title>
         <Subtitle>BPM</Subtitle>
       </TextGroup>
-      <Button onPress={updateState(State.IDLE)}>
+      <Button onPress={updateState(Status.IDLE)}>
         <Label>Done</Label>
       </Button>
-      <Button onPress={updateState(State.RECORDING)}>
+      <Button onPress={updateState(Status.RECORDING)}>
         <Label>Retry</Label>
       </Button>
     </Wrapper>

@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { LogBox } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { AppProvider } from "./src/Context";
+import AppProvider from "./src/AppProvider";
 import History from "./src/sections/History";
 import Recorder from "./src/sections/Recorder";
 import { prepareAudioCapabilities } from "./src/AudioService";
@@ -16,12 +15,10 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <AppProvider>
-        <StatusBar style="auto" />
-        <History />
-        <Recorder />
-      </AppProvider>
-    </SafeAreaProvider>
+    <AppProvider>
+      <StatusBar style="auto" />
+      <History />
+      <Recorder />
+    </AppProvider>
   );
 }

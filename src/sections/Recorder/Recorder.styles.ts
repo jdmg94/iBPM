@@ -22,15 +22,21 @@ export const Handle = styled(Animated.View)`
   background-color: #0004;
 `;
 
-export const Button = styled.Pressable`
-  padding: 8px 16px;
-  border-radius: 4px;
-  background-color: #f00;
+export const ButtonOutline = styled.View`
   margin-top: 16px;
+  border-radius: 50%;
+  height: 75px;
+  width: 75px;
+  align-items: center;
+  justify-content: center;
+  border: solid 4px #FFF;
+`
+
+export const Button = styled.Pressable`
+  background-color: #f00;
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  transition: 1s;
 `;
 
 export const Label = styled.Text`

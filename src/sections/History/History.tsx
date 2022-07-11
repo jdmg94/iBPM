@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Item, { BPMRecord, Separator } from "./Item";
 
 const data: BPMRecord[] = [
-  { id: "1", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
+  { id: "1", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, timestamp: 250 },
   // { id: "2", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
   // { id: "3", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },
   // { id: "4", label: "2022-06-28, 4:17:35 a.m.", bpm: 125, doubleTime: 250 },

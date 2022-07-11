@@ -14,7 +14,7 @@ export type BPMRecord = {
   id: string;
   label: string;
   bpm: number;
-  doubleTime: number;
+  timestamp: number;
 };
 
 type HistoryItemProps = {

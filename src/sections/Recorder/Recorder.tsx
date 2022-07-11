@@ -8,26 +8,34 @@ import {
 } from "react-native-reanimated";
 
 import Result from "./Result/Result";
-import { State, useAppState } from "../../Context";
+import { useSelector, useDispatch } from "../../hooks";
+import { Status, updateStatus } from "./Recorder.slice";
 import { RecordingLoader, ProcessingLoader } from "./Loaders";
-import { Wrapper, Handle, Button, Label } from "./Recorder.styles";
 import { captureAudioSample, determineBPM } from "../../AudioService";
+import {
+  Label,
+  Handle,
+  Wrapper,
+  Button,
+  ButtonOutline,
+} from "./Recorder.styles";
 
 const Recorder = () => {
-  const [duration] = useState(8000);
+  const dispatch = useDispatch();
+  const [duration] = useState(6000);
   const [result, setResult] = useState(0);
   const [message, setMessage] = useState("");
-  const { status, setStatus } = useAppState();
+  const status = useSelector((state) => state.Recorder.status);
 
   const translateY = useSharedValue(350);
   const isDrawerOpen = useSharedValue(false);
   const animation = useAnimatedStyle(() => {
-    if (status === State.IDLE && !isDrawerOpen.value) {
-      translateY.value = withSpring(350, {
+    if (status === Status.IDLE && !isDrawerOpen.value) {
+      translateY.value = withSpring(340, {
         overshootClamping: true,
       });
     } else {
-      translateY.value = withSpring(isDrawerOpen.value ? 0 : 250, {
+      translateY.value = withSpring(isDrawerOpen.value ? 0 : 230, {
         overshootClamping: true,
       });
     }
@@ -56,30 +64,33 @@ const Recorder = () => {
     },
   });
 
+  const setStatus = (nextState: Status) => dispatch(updateStatus(nextState));
+
   useEffect(() => {
     switch (status) {
-      case State.IDLE:
+      case Status.IDLE:
         setMessage("");
         isDrawerOpen.value = false;
         break;
-      case State.RECORDING:
+      case Status.RECORDING:
         isDrawerOpen.value = false;
         setMessage("Capturing Audio Sample");
         captureAudioSample(duration).then(({ sound }) => {
-          determineBPM(sound).then((bpm) => {
-            console.log('hello BPM!', bpm)
-            setResult(bpm);
-            setStatus(State.DONE);
-          }).catch(() => {
-            setStatus(State.IDLE)
-          });
-          setStatus(State.PROCESSING);
+          determineBPM(sound)
+            .then((bpm) => {
+              setResult(bpm);
+              setStatus(Status.DONE);
+            })
+            .catch(() => {
+              setStatus(Status.IDLE);
+            });
+          setStatus(Status.PROCESSING);
         });
         break;
-      case State.PROCESSING:
+      case Status.PROCESSING:
         setMessage("Calculating Beats");
         break;
-      case State.DONE:
+      case Status.DONE:
         setMessage(" Approximately:");
         isDrawerOpen.value = true;
         break;
@@ -91,18 +102,20 @@ const Recorder = () => {
       <PanGestureHandler onGestureEvent={verticalDrag}>
         <Handle hitSlop={{ top: 20, bottom: 50, left: 150, right: 150 }} />
       </PanGestureHandler>
-      {status === State.IDLE && (
-        <Button onPress={() => setStatus(State.RECORDING)} />
+      {status === Status.IDLE && (
+        <ButtonOutline>
+          <Button onPress={() => setStatus(Status.RECORDING)} />
+        </ButtonOutline>
       )}
-      {status === State.RECORDING && (
+      {status === Status.RECORDING && (
         <RecordingLoader
           duration={duration}
-          onRest={() => setStatus(State.PROCESSING)}
+          onRest={() => setStatus(Status.PROCESSING)}
         />
       )}
-      {status === State.PROCESSING && <ProcessingLoader />}
+      {status === Status.PROCESSING && <ProcessingLoader />}
       <Label>{message}</Label>
-      {status === State.DONE && <Result bpm={result} />}
+      {status === Status.DONE && <Result bpm={result} />}
     </Wrapper>
   );
 };

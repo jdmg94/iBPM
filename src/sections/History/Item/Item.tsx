@@ -1,14 +1,18 @@
 import { FC, useRef } from "react";
+import { Alert } from "react-native";
+import { formatRelative, fromUnixTime } from "date-fns";
 import { Swipeable } from "react-native-gesture-handler";
+
 import {
   Wrapper,
   Title,
+  Subtitle,
   Detail,
+  Column,
   Label,
   Sublabel,
-  Actions,
-  ActionItem,
 } from "./Item.styles";
+import ActionItem from "./Action";
 
 export type BPMRecord = {
   id: string;
@@ -19,8 +23,8 @@ export type BPMRecord = {
 
 type HistoryItemProps = {
   data: BPMRecord;
-  onRemove?: () => void;
-  onEdit?: (updates: Partial<BPMRecord>) => void;
+  onRemove: () => void;
+  onEdit: (updates: Partial<BPMRecord>) => void;
 };
 
 const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
@@ -46,33 +50,56 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         };
 
         return (
-          <Actions>
-            <ActionItem
-              color="#d3a15f"
-              style={animation}
-              onPress={() => {
-                onEdit?.();
-                closeRow();
-              }}
-            >
-              <Label color="#FFF">Edit</Label>
-            </ActionItem>
+          <>
             <ActionItem
               color="#c1121f"
               style={animation}
               onPress={() => {
-                onRemove?.();
                 closeRow();
+                setTimeout(onRemove, 350)
               }}
             >
               <Label color="#FFF">Delete</Label>
             </ActionItem>
-          </Actions>
+            <ActionItem
+              color="#08F"
+              style={animation}
+              onPress={() => {
+                Alert.prompt(
+                  "Rename",
+                  undefined,
+                  [
+                    {
+                      text: "Save",
+                      onPress: (label) => {
+                        onEdit({ label });
+                        closeRow();
+                      },
+                    },
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                      onPress: () => closeRow(),
+                    },
+                  ],
+                  undefined,
+                  data.label
+                );
+              }}
+            >
+              <Label color="#FFF">Rename</Label>
+            </ActionItem>
+          </>
         );
       }}
     >
       <Wrapper>
-        <Title>{data.label}</Title>
+        <Column>
+          <Title>{data.label}</Title>
+          <Subtitle>
+            {formatRelative(fromUnixTime(data.timestamp), new Date())}
+          </Subtitle>
+        </Column>
         <Detail>
           <Label>{data.bpm}</Label>
           <Sublabel>BPM</Sublabel>

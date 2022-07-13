@@ -6,7 +6,7 @@ import { reducer as History } from "./sections/History";
 
 export default persistReducer(
   {
-    key: "iBPM",
+    key: "iBPM-dev",
     storage: AsyncStorage,
   },
   combineReducers({

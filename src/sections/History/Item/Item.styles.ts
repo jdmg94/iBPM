@@ -1,18 +1,29 @@
 import styled from "@emotion/native";
-import { Animated } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
 
 export const Wrapper = styled.View`
   height: 80px;
-  width: 100%;
+  width: auto;
   padding: 8px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  border: 1px solid #0004;
+  border-radius: 8px;
+  margin: 8px;
+`;
+
+export const Column = styled.View`
+  flex: 1;
+  flex-direction: column;
 `;
 
 export const Title = styled.Text`
-  font-size: 18px;
+  font-size: 20px;
+`;
+
+export const Subtitle = styled.Text`
+  font-size: 14px;
+  font-weight: 300;
 `;
 
 export const Detail = styled.View`
@@ -39,20 +50,4 @@ export const Separator = styled.View`
   width: 95%;
   background-color: #0004;
   margin: 0 auto;
-`;
-
-export const Actions = styled.View`
-  height: 80px;
-  width: 160px;
-  flex-direction: row;
-`;
-
-export const ActionItem = styled(Animated.createAnimatedComponent(RectButton))<{
-  color?: string;
-}>`
-  height: 80px;
-  width: 80px;
-  align-items: center;
-  justify-content: center;
-  background-color: ${(props) => props.color};
 `;

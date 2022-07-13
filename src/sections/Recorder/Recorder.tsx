@@ -1,3 +1,6 @@
+import { Alert } from "react-native";
+import { getUnixTime } from "date-fns";
+import { nanoid } from "@reduxjs/toolkit";
 import { useState, useEffect } from "react";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import {
@@ -8,6 +11,8 @@ import {
 } from "react-native-reanimated";
 
 import Result from "./Result";
+import { addRecord } from "../History";
+import { useDispatch } from "../../hooks";
 import useRecorder, { Status } from "./useRecorder";
 import { RecordingLoader, ProcessingLoader } from "./Loaders";
 import {
@@ -19,6 +24,7 @@ import {
 } from "./Recorder.styles";
 
 const Recorder = () => {
+  const dispatch = useDispatch();
   const [duration] = useState(6000);
   const { status, message, result, setStatus } = useRecorder(duration);
 
@@ -70,7 +76,7 @@ const Recorder = () => {
         isDrawerOpen.value = true;
         break;
     }
-  }, [status]);
+  }, [status, result]);
 
   return (
     <Wrapper style={animation}>
@@ -95,6 +101,25 @@ const Recorder = () => {
           bpm={result}
           onComplete={() => setStatus(Status.IDLE)}
           onRetry={() => setStatus(Status.RECORDING)}
+          onSave={() =>
+            Alert.prompt("New Result", "Label this new record", [
+              {
+                text: "Save",
+                onPress: (label) => {
+                  setStatus(Status.IDLE);
+                  dispatch(
+                    addRecord({
+                      bpm: result,
+                      id: nanoid(),
+                      label: label!,
+                      timestamp: getUnixTime(new Date()),
+                    })
+                  );
+                },
+              },
+              { text: "Cancel", style: "cancel" },
+            ])
+          }
         />
       )}
     </Wrapper>

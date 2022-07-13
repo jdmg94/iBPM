@@ -1,7 +1,4 @@
 import { FC } from "react";
-
-import { useDispatch } from "../../../hooks";
-import { Status, updateStatus } from "../Recorder.slice";
 import {
   Button,
   Wrapper,
@@ -13,28 +10,23 @@ import {
 
 type ResultProps = {
   bpm?: number;
+  onComplete: () => void;
+  onRetry: () => void;
 };
 
-const Result: FC<ResultProps> = ({ bpm = 0 }) => {
-  const dispatch = useDispatch();
-
-  const updateState = (nextState: Status) => () =>
-    dispatch(updateStatus(nextState));
-
-  return (
-    <Wrapper>
-      <TextGroup>
-        <Title>{bpm}</Title>
-        <Subtitle>BPM</Subtitle>
-      </TextGroup>
-      <Button onPress={updateState(Status.IDLE)}>
-        <Label>Done</Label>
-      </Button>
-      <Button onPress={updateState(Status.RECORDING)}>
-        <Label>Retry</Label>
-      </Button>
-    </Wrapper>
-  );
-};
+const Result: FC<ResultProps> = ({ bpm = 0, onComplete, onRetry }) => (
+  <Wrapper>
+    <TextGroup>
+      <Title>{bpm}</Title>
+      <Subtitle>BPM</Subtitle>
+    </TextGroup>
+    <Button onPress={onComplete}>
+      <Label>Done</Label>
+    </Button>
+    <Button onPress={onRetry}>
+      <Label>Retry</Label>
+    </Button>
+  </Wrapper>
+);
 
 export default Result;

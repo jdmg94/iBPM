@@ -72,9 +72,11 @@ export const determineBPM = (sound: Audio.Sound): Promise<number> =>
     const linearPCMData: number[] = [];
     sound.setOnPlaybackStatusUpdate((status) => {
       if ((status as AVPlaybackStatusSuccess).didJustFinish) {
-        sound.unloadAsync()
+        sound.stopAsync().then(() => {
+          sound.unloadAsync();
+        });
 
-        const { tempo } = new musicTempo(linearPCMData);        
+        const { tempo } = new musicTempo(linearPCMData);
         resolve(Math.floor(tempo));
       }
     });

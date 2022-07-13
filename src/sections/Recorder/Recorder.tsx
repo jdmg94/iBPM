@@ -8,8 +8,6 @@ import {
 } from "react-native-reanimated";
 
 import Result from "./Result/Result";
-import { useSelector, useDispatch } from "../../hooks";
-import { Status, updateStatus } from "./Recorder.slice";
 import { RecordingLoader, ProcessingLoader } from "./Loaders";
 import { captureAudioSample, determineBPM } from "../../AudioService";
 import {
@@ -20,12 +18,19 @@ import {
   ButtonOutline,
 } from "./Recorder.styles";
 
+export enum Status {
+  IDLE,
+  RECORDING,
+  PROCESSING,
+  DONE,
+  ERROR,
+}
+
 const Recorder = () => {
-  const dispatch = useDispatch();
   const [duration] = useState(6000);
   const [result, setResult] = useState(0);
   const [message, setMessage] = useState("");
-  const status = useSelector((state) => state.Recorder.status);
+  const [status, setStatus] = useState(Status.IDLE);
 
   const translateY = useSharedValue(350);
   const isDrawerOpen = useSharedValue(false);
@@ -63,8 +68,6 @@ const Recorder = () => {
       }
     },
   });
-
-  const setStatus = (nextState: Status) => dispatch(updateStatus(nextState));
 
   useEffect(() => {
     switch (status) {
@@ -115,7 +118,13 @@ const Recorder = () => {
       )}
       {status === Status.PROCESSING && <ProcessingLoader />}
       <Label>{message}</Label>
-      {status === Status.DONE && <Result bpm={result} />}
+      {status === Status.DONE && (
+        <Result
+          bpm={result}
+          onComplete={() => setStatus(Status.IDLE)}
+          onRetry={() => setStatus(Status.RECORDING)}
+        />
+      )}
     </Wrapper>
   );
 };

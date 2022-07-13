@@ -1,10 +1,15 @@
-import { combineReducers } from '@reduxjs/toolkit'
-import { reducer as Recorder } from './sections/Recorder'
-import { reducer as History } from './sections/History'
-import { reducer as Settings } from './sections/Settings'
+import { persistReducer } from "redux-persist";
+import { combineReducers } from "@reduxjs/toolkit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default combineReducers({
-  Recorder,
-  History,
-  Settings,
-})
+import { reducer as History } from "./sections/History";
+
+export default persistReducer(
+  {
+    key: "iBPM",
+    storage: AsyncStorage,
+  },
+  combineReducers({
+    History,
+  })
+);

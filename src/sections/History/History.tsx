@@ -1,4 +1,5 @@
-import { FlatList, Alert } from "react-native";
+import { FlatList } from "react-native";
+import { useTheme } from "@emotion/react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Item, { BPMRecord, Separator } from "./Item";
@@ -6,6 +7,7 @@ import { useDispatch, useSelector } from "../../hooks";
 import { deleteRecord, updateRecord } from "./History.slice";
 
 const History = () => {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
   const data = useSelector((state) => state.History.data);
@@ -18,7 +20,10 @@ const History = () => {
     <FlatList
       data={data}
       keyExtractor={({ id }) => id}
-      style={{ marginTop: insets.top }}
+      style={{
+        paddingTop: insets.top,
+        backgroundColor: theme.colors.background,
+      }}
       contentContainerStyle={{ paddingBottom: 150 }}
       ItemSeparatorComponent={() => <Separator />}
       renderItem={({ item }) => (

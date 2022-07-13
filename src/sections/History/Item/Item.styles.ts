@@ -7,7 +7,7 @@ export const Wrapper = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #0004;
+  border: 1px solid ${props => props.theme.colors.text};
   border-radius: 8px;
   margin: 8px;
 `;
@@ -19,11 +19,13 @@ export const Column = styled.View`
 
 export const Title = styled.Text`
   font-size: 20px;
+  color: ${props => props.theme.colors.text};
 `;
 
 export const Subtitle = styled.Text`
   font-size: 14px;
   font-weight: 300;
+  color: ${props => props.theme.colors.text};
 `;
 
 export const Detail = styled.View`
@@ -32,17 +34,19 @@ export const Detail = styled.View`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #0002;
+  background-color: ${props => props.theme.colors.accent};
   border-radius: 4px;
 `;
-export const Label = styled.Text<{ color?: string }>`
+export const Label = styled.Text`
   font-size: 16px;
-  color: ${(props) => props.color || "#000"};
+  color: ${(props) => props.theme.colors.text};
 `;
 
 export const Sublabel = styled.Text`
   font-weight: bold;
   font-size: 14px;
+  color: ${(props) => props.theme.colors.text};
+  
 `;
 
 export const Separator = styled.View`

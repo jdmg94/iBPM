@@ -52,17 +52,17 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         return (
           <>
             <ActionItem
+              label="Delete"
               color="#c1121f"
               style={animation}
               onPress={() => {
                 closeRow();
-                setTimeout(onRemove, 350)
+                setTimeout(onRemove, 350);
               }}
-            >
-              <Label color="#FFF">Delete</Label>
-            </ActionItem>
+            />
             <ActionItem
               color="#08F"
+              label="Rename"
               style={animation}
               onPress={() => {
                 Alert.prompt(
@@ -86,9 +86,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
                   data.label
                 );
               }}
-            >
-              <Label color="#FFF">Rename</Label>
-            </ActionItem>
+            />
           </>
         );
       }}

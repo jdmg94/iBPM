@@ -11,7 +11,7 @@ export const Wrapper = styled(Animated.View)`
   width: 100%;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
-  background-color: #ccc;
+  background-color: ${(props) => props.theme.colors.accent};
 `;
 
 export const Handle = styled(Animated.View)`
@@ -29,8 +29,8 @@ export const ButtonOutline = styled.View`
   width: 75px;
   align-items: center;
   justify-content: center;
-  border: solid 4px #FFF;
-`
+  border: solid 4px #fff;
+`;
 
 export const Button = styled.Pressable`
   background-color: #f00;
@@ -53,4 +53,4 @@ export const AdBanner = styled.View`
   margin: 16px 0px;
   align-items: center;
   justify-content: center;
-`
+`;

@@ -7,9 +7,9 @@ import {
   useAnimatedGestureHandler,
 } from "react-native-reanimated";
 
-import Result from "./Result/Result";
+import Result from "./Result";
+import useRecorder, { Status } from "./useRecorder";
 import { RecordingLoader, ProcessingLoader } from "./Loaders";
-import { captureAudioSample, determineBPM } from "../../AudioService";
 import {
   Label,
   Handle,
@@ -18,19 +18,9 @@ import {
   ButtonOutline,
 } from "./Recorder.styles";
 
-export enum Status {
-  IDLE,
-  RECORDING,
-  PROCESSING,
-  DONE,
-  ERROR,
-}
-
 const Recorder = () => {
   const [duration] = useState(6000);
-  const [result, setResult] = useState(0);
-  const [message, setMessage] = useState("");
-  const [status, setStatus] = useState(Status.IDLE);
+  const { status, message, result, setStatus } = useRecorder(duration);
 
   const translateY = useSharedValue(350);
   const isDrawerOpen = useSharedValue(false);
@@ -72,29 +62,11 @@ const Recorder = () => {
   useEffect(() => {
     switch (status) {
       case Status.IDLE:
-        setMessage("");
-        isDrawerOpen.value = false;
-        break;
       case Status.RECORDING:
         isDrawerOpen.value = false;
-        setMessage("Capturing Audio Sample");
-        captureAudioSample(duration).then(({ sound }) => {
-          determineBPM(sound)
-            .then((bpm) => {
-              setResult(bpm);
-              setStatus(Status.DONE);
-            })
-            .catch(() => {
-              setStatus(Status.IDLE);
-            });
-          setStatus(Status.PROCESSING);
-        });
         break;
-      case Status.PROCESSING:
-        setMessage("Calculating Beats");
-        break;
+
       case Status.DONE:
-        setMessage(" Approximately:");
         isDrawerOpen.value = true;
         break;
     }

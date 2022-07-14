@@ -25,7 +25,7 @@ type SampleRecording = {
 export const captureAudioSample = async (
   duration = 15000,
   soundOptions = {
-    isMuted: true,
+    isMuted: true,    
   }
 ): Promise<SampleRecording> => {
   const recording = new Audio.Recording();
@@ -63,6 +63,10 @@ export const captureAudioSample = async (
   await recording.stopAndUnloadAsync();
   const uri = await recording.getURI()!;
   const { sound } = await recording.createNewLoadedSoundAsync(soundOptions);
+
+  // keep at 4x to increase PCM data collection speed
+  // faster rates reduce accuracy
+  await sound.setStatusAsync({ rate: 4   })
 
   return { sound, uri };
 };

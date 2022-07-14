@@ -52,6 +52,6 @@ export const Sublabel = styled.Text`
 export const Separator = styled.View`
   height: 1px;
   width: 95%;
-  background-color: #0004;
+  background-color: ${(props) => props.theme.colors.text}4;
   margin: 0 auto;
 `;

@@ -2,6 +2,7 @@ import { FlatList } from "react-native";
 import { useTheme } from "@emotion/react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import Header from './Header'
 import Item, { BPMRecord, Separator } from "./Item";
 import { useDispatch, useSelector } from "../../hooks";
 import { deleteRecord, updateRecord } from "./History.slice";
@@ -24,7 +25,8 @@ const History = () => {
         paddingTop: insets.top,
         backgroundColor: theme.colors.background,
       }}
-      contentContainerStyle={{ paddingBottom: 150 }}
+      contentContainerStyle={{ paddingBottom: 200 }}
+      ListHeaderComponent={<Header>All Records</Header>}
       ItemSeparatorComponent={() => <Separator />}
       renderItem={({ item }) => (
         <Item

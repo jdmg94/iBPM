@@ -80,9 +80,11 @@ const Recorder = () => {
 
   return (
     <Wrapper style={animation}>
-      <PanGestureHandler onGestureEvent={verticalDrag}>
-        <Handle hitSlop={{ top: 20, bottom: 50, left: 150, right: 150 }} />
-      </PanGestureHandler>
+      {status === Status.DONE && (
+        <PanGestureHandler onGestureEvent={verticalDrag}>
+          <Handle hitSlop={{ top: 20, bottom: 50, left: 150, right: 150 }} />
+        </PanGestureHandler>
+      )}
       {status === Status.IDLE && (
         <ButtonOutline>
           <Button onPress={() => setStatus(Status.RECORDING)} />
@@ -102,7 +104,7 @@ const Recorder = () => {
           onComplete={() => setStatus(Status.IDLE)}
           onRetry={() => setStatus(Status.RECORDING)}
           onSave={() =>
-            Alert.prompt("New Result", "Label this new record", [
+            Alert.prompt("Name The New Item", undefined, [
               {
                 text: "Save",
                 onPress: (label) => {

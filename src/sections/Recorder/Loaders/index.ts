@@ -1,2 +1,2 @@
-export { RecordingLoader } from "./Recording";
-export { ProcessingLoader } from "./Processing";
+export {RecordingLoader} from './Recording';
+export {ProcessingLoader} from './Processing';

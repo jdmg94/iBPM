@@ -1,4 +1,4 @@
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 import { getUnixTime } from "date-fns";
 import { nanoid } from "@reduxjs/toolkit";
 import { useState, useEffect } from "react";
@@ -23,20 +23,30 @@ import {
   ButtonOutline,
 } from "./Recorder.styles";
 
+const initialOffset = Platform.select({
+  android: 340,
+  ios: 360,
+})!;
+
+const workingOffset = Platform.select({
+  android: 230,
+  ios: 200,
+})!;
+
 const Recorder = () => {
   const dispatch = useDispatch();
   const [duration] = useState(6000);
   const { status, message, result, setStatus } = useRecorder(duration);
 
-  const translateY = useSharedValue(350);
+  const translateY = useSharedValue(initialOffset);
   const isDrawerOpen = useSharedValue(false);
   const animation = useAnimatedStyle(() => {
     if (status === Status.IDLE && !isDrawerOpen.value) {
-      translateY.value = withSpring(340, {
+      translateY.value = withSpring(initialOffset, {
         overshootClamping: true,
       });
     } else {
-      translateY.value = withSpring(isDrawerOpen.value ? 0 : 230, {
+      translateY.value = withSpring(isDrawerOpen.value ? 0 : workingOffset, {
         overshootClamping: true,
       });
     }
@@ -52,7 +62,7 @@ const Recorder = () => {
     },
     onActive: (event, context) => {
       const nextValue = context.startY + event.translationY;
-      if (nextValue >= 0 && nextValue <= 350) {
+      if (nextValue >= 0 && nextValue <= initialOffset) {
         translateY.value = nextValue;
       }
     },
@@ -93,7 +103,7 @@ const Recorder = () => {
       {status === Status.RECORDING && (
         <RecordingLoader
           duration={duration}
-          onRest={() => setStatus(Status.PROCESSING)}
+          // onRest={() => setStatus(Status.PROCESSING)}
         />
       )}
       {status === Status.PROCESSING && <ProcessingLoader />}

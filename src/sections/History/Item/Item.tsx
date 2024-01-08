@@ -1,7 +1,7 @@
 import { FC, useRef } from "react";
 import { Alert } from "react-native";
-import { formatRelative, fromUnixTime } from "date-fns";
 import { Swipeable } from "react-native-gesture-handler";
+import { formatRelative, formatDistanceToNow, fromUnixTime } from "date-fns";
 
 import {
   Wrapper,
@@ -95,7 +95,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         <Column>
           <Title>{data.label}</Title>
           <Subtitle>
-            {formatRelative(fromUnixTime(data.timestamp), new Date())}
+						{formatDistanceToNow(fromUnixTime(data.timestamp))}
           </Subtitle>
         </Column>
         <Detail>

@@ -1,7 +1,7 @@
 import { Alert, Platform } from "react-native";
 import { getUnixTime } from "date-fns";
 import { nanoid } from "@reduxjs/toolkit";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import {
   withSpring,
@@ -13,8 +13,8 @@ import {
 import Result from "./Result";
 import { addRecord } from "../History";
 import { useDispatch } from "../../hooks";
-import useRecorder, { Status } from "./useRecorder";
 import { RecordingLoader, ProcessingLoader } from "./Loaders";
+import { captureAudioSample, determineBPM } from "../../AudioService";
 import {
   Label,
   Handle,
@@ -23,20 +23,29 @@ import {
   ButtonOutline,
 } from "./Recorder.styles";
 
+export enum Status {
+  IDLE,
+  RECORDING,
+  PROCESSING,
+  DONE,
+  ERROR,
+}
+
 const initialOffset = Platform.select({
   android: 340,
   ios: 360,
 })!;
 
 const workingOffset = Platform.select({
-  android: 230,
-  ios: 200,
+  android: 280,
+  ios: 280,
 })!;
 
 const Recorder = () => {
   const dispatch = useDispatch();
   const [duration] = useState(6000);
-  const { status, message, result, setStatus } = useRecorder(duration);
+  const [result, setResult] = useState(0);
+  const [status, setStatus] = useState(Status.IDLE);
 
   const translateY = useSharedValue(initialOffset);
   const isDrawerOpen = useSharedValue(false);
@@ -88,6 +97,15 @@ const Recorder = () => {
     }
   }, [status, result]);
 
+  const guessBPM = useCallback(async () => {
+    setStatus(Status.RECORDING);
+    const buffer = await captureAudioSample(duration);
+    setStatus(Status.PROCESSING);
+    const bpm = await determineBPM(buffer.sound);
+    setStatus(Status.DONE);
+    setResult(bpm);
+  }, [duration]);
+
   return (
     <Wrapper style={animation}>
       {status === Status.DONE && (
@@ -97,22 +115,27 @@ const Recorder = () => {
       )}
       {status === Status.IDLE && (
         <ButtonOutline>
-          <Button onPress={() => setStatus(Status.RECORDING)} />
+          <Button onPress={guessBPM} />
         </ButtonOutline>
       )}
-      {status === Status.RECORDING && (
-        <RecordingLoader
-          duration={duration}
-          // onRest={() => setStatus(Status.PROCESSING)}
-        />
-      )}
+      {status === Status.RECORDING && <RecordingLoader duration={duration} />}
       {status === Status.PROCESSING && <ProcessingLoader />}
-      <Label>{message}</Label>
+      <Label>
+        {
+          {
+            [Status.IDLE]: "",
+            [Status.ERROR]: "Error",
+            [Status.RECORDING]: "Capturing Audio Sample",
+            [Status.PROCESSING]: "Calculating Beats",
+            [Status.DONE]: " Approximately:",
+          }[status]
+        }
+      </Label>
       {status === Status.DONE && (
         <Result
           bpm={result}
           onComplete={() => setStatus(Status.IDLE)}
-          onRetry={() => setStatus(Status.RECORDING)}
+          onRetry={guessBPM}
           onSave={() =>
             Alert.prompt("Name The New Item", undefined, [
               {

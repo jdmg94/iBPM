@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type BPMRecord = {
 	id: string;
@@ -31,7 +31,7 @@ const History = createSlice({
 		},
 		updateRecord: (
 			state: HistoryState,
-			action: PayloadAction<{id: string; updates: Partial<BPMRecord>}>,
+			action: PayloadAction<{ id: string; updates: Partial<BPMRecord> }>,
 		) => {
 			const index = state.data.findIndex(item => item.id === action.payload.id);
 
@@ -49,6 +49,6 @@ const History = createSlice({
 	},
 });
 
-export const {addRecord, updateRecord, deleteRecord} = History.actions;
+export const { addRecord, updateRecord, deleteRecord } = History.actions;
 
 export default History.reducer;

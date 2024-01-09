@@ -35,7 +35,7 @@ export const Detail = styled.View`
 	align-items: center;
 	justify-content: center;
 	background-color: ${props => props.theme.colors.accent};
-	border-radius: 4px;
+	border-radius: 8px;
 `;
 export const Label = styled.Text`
 	font-size: 16px;

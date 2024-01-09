@@ -1,5 +1,5 @@
 import musicTempo from 'music-tempo';
-import {Audio, AVPlaybackStatusSuccess} from 'expo-av';
+import { Audio, AVPlaybackStatusSuccess } from 'expo-av';
 
 const sleep = async (timeout: number) =>
 	new Promise(resolve => setTimeout(resolve, timeout));
@@ -29,31 +29,34 @@ export const captureAudioSample = async (
 	const status = await recording.getStatusAsync();
 
 	if (!status.canRecord) {
-		const {ios, android, web} = Audio.RecordingOptionsPresets.HighQuality;		
+		const { ios, android, web } = Audio.RecordingOptionsPresets.HIGH_QUALITY;
 		const myOptions = {
 			numberOfChannels: 1,
 			linearPCMIsFloat: true,
 			linearPCMIsBigEndian: false,
 		};
 
-		await recording.prepareToRecordAsync({
-			keepAudioActiveHint: true,
-			web: {
-				...web,
-				...myOptions,
-			},
-			// android,
-			android: {
-				...android,
-				audioEncoder: Audio.AndroidAudioEncoder.AAC,
-				outputFormat: Audio.AndroidOutputFormat.WEBM,
-			},
-			ios: {
-				...ios,
-				...myOptions,
-				outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
-			},
-		});
+		const recorderStatus = await recording.getStatusAsync();
+
+		if (!recorderStatus.canRecord) {
+			await recording.prepareToRecordAsync({
+				keepAudioActiveHint: true,
+				web: {
+					...web,
+					...myOptions,
+				},
+				android: {
+					...android,
+					audioEncoder: Audio.AndroidAudioEncoder.AAC,
+					outputFormat: Audio.AndroidOutputFormat.WEBM,
+				},
+				ios: {
+					...ios,
+					...myOptions,
+					outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
+				},
+			});
+		}
 	}
 
 	recording.startAsync();
@@ -61,44 +64,44 @@ export const captureAudioSample = async (
 	await sleep(duration);
 	await recording.stopAndUnloadAsync();
 	const uri = await recording.getURI()!;
-	const {sound} = await recording.createNewLoadedSoundAsync({
-		volume: 1,
-		// isMuted: true,
+	const { sound } = await recording.createNewLoadedSoundAsync({
+		volume: 0,
+		isMuted: true,
 	});
 
 	// keep at 4x to increase PCM data collection speed
 	// faster rates reduce accuracy
-	await sound.setStatusAsync({rate: 4});
+	await sound.setStatusAsync({ rate: 4 });
 
-	return {sound, uri};
+	return { sound, uri };
 };
 
-export const determineBPM = (sound: Audio.Sound): Promise<number> =>
-	new Promise((resolve, reject) => {
-		console.log('hello world')
-		const linearPCMData: number[] = [];
+export const determineBPM = (sound: Audio.Sound): Promise<number> => new Promise((resolve, reject) => {
+	const linearPCMData: number[] = [];
 
-		const timeoutRef = setTimeout(() => {
-			reject('No information could be collected from sample');
-		}, 3000);
+	const timeoutRef = setTimeout(() => {
+		reject('No information could be collected from sample');
+	}, 3000);
 
-		sound.setOnPlaybackStatusUpdate(status => {			
-			if ((status as AVPlaybackStatusSuccess).didJustFinish) {
-				clearTimeout(timeoutRef);
-				if (linearPCMData.length > 0) {
-					sound.unloadAsync();
-					const {tempo} = new musicTempo(linearPCMData);
+	sound.setOnPlaybackStatusUpdate(status => {
+		if ((status as AVPlaybackStatusSuccess).didJustFinish) {
+			clearTimeout(timeoutRef);
+			if (linearPCMData.length > 0) {
+				sound.unloadAsync();
+				const { tempo } = musicTempo(linearPCMData, {
+					minBeatInterval: 0.375 // max 160bpm
+				});
 
-					resolve(Math.floor(tempo));
-				} else {
-					reject('No information could be collected from sample');
-				}
+				resolve(Math.floor(tempo));
+			} else {
+				reject('No information could be collected from sample');
 			}
-		});
-
-		sound.setOnAudioSampleReceived(sample => {
-			linearPCMData.push(...sample.channels[0].frames);
-		});
-
-		sound.playAsync();
+		}
 	});
+
+	sound.setOnAudioSampleReceived(sample => {
+		linearPCMData.push(...sample.channels[0].frames);
+	});
+
+	sound.playAsync();
+});

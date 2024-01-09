@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type BPMRecord = {
 	id: string;
-	label: string;
 	bpm: number;
-	timestamp: number;
 	uri: string;
+	label: string;
+	timestamp: number;
 };
 
 type HistoryState = {

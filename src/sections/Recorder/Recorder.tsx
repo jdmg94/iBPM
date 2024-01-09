@@ -1,5 +1,6 @@
 import { Alert } from "react-native";
 import { useDispatch } from "@/hooks";
+import { useSelector } from '@/hooks'
 import { getUnixTime } from "date-fns";
 import { nanoid } from "@reduxjs/toolkit";
 import { useState, useCallback } from "react";
@@ -25,13 +26,12 @@ import {
   ButtonOutline,
 } from "./Recorder.styles";
 
-const duration = 6000; // to be replaced with user defined settings
-
 const Recorder = () => {
   const dispatch = useDispatch();
   const [result, setResult] = useState<BPMRecord>();
   const [status, setStatus] = useState(Status.IDLE);
   const { animation, verticalDrag } = useInteraction(status);
+  const duration = useSelector(state => state.Settings.duration);
 
   const captureBPM = useCallback(async () => {
     await prepareToRecord();

@@ -28,8 +28,6 @@ export const getAudioFromURI = async (uri: string) => {
 	return sound;
 }
 
-
-
 export const prepareToPlay = async () => {
 	await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
 }

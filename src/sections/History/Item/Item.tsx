@@ -1,11 +1,11 @@
-import { FC, useRef, useState, useEffect, useCallback } from "react";
+import { Audio } from "expo-av";
 import { Alert } from "react-native";
 import { BPMRecord } from "@/types/BPMRecord";
-import { Audio } from "expo-av";
 import { prepareToPlay } from "@/AudioService";
 import { Feather as Icon } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { formatDistanceToNow, fromUnixTime } from "date-fns";
+import { FC, useRef, useState, useEffect, useCallback } from "react";
 
 import ActionItem from "./Action";
 import {
@@ -24,11 +24,10 @@ type HistoryItemProps = {
   onEdit: (updates: Partial<BPMRecord>) => void;
 };
 
-const duration = 6000; // to be replaced with user defined settings
-
 enum PlayStatus {
   STOPPED,
   PLAYING,
+  PAUSED,
   ERROR,
 }
 
@@ -54,6 +53,8 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         } else {
           if (statusUpdate.isPlaying) {
             updateStatus(PlayStatus.PLAYING);
+          } else {
+            updateStatus(PlayStatus.PAUSED)
           }
 
           if (statusUpdate.didJustFinish) {
@@ -138,11 +139,12 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               }
               onPress={() => {
                 if (status === PlayStatus.PLAYING) {
-                  sample?.pauseAsync().then(() => {
-                    // sample.stopAsync().then (() => {
-                    //   sample.unloadAsync()
-                    // })
-                  });
+                  sample?.pauseAsync()
+                    .then(sample.stopAsync)
+                    .then (sample.unloadAsync)                    
+                    .then(() => {                      
+                      setSample(undefined);
+                    });
                 } else {
                   prepareToPlay().then(() => {
                     sample?.playAsync();

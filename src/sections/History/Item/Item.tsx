@@ -1,8 +1,13 @@
-import { FC, useRef } from "react";
+import { FC, useRef, useState, useEffect, useCallback } from "react";
 import { Alert } from "react-native";
+import { BPMRecord } from "@/types/BPMRecord";
+import { Audio } from "expo-av";
+import { prepareToPlay } from "@/AudioService";
+import { Feather as Icon } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
-import { formatRelative, formatDistanceToNow, fromUnixTime } from "date-fns";
+import { formatDistanceToNow, fromUnixTime } from "date-fns";
 
+import ActionItem from "./Action";
 import {
   Wrapper,
   Title,
@@ -12,14 +17,6 @@ import {
   Label,
   Sublabel,
 } from "./Item.styles";
-import ActionItem from "./Action";
-
-export type BPMRecord = {
-  id: string;
-  label: string;
-  bpm: number;
-  timestamp: number;
-};
 
 type HistoryItemProps = {
   data: BPMRecord;
@@ -27,9 +24,51 @@ type HistoryItemProps = {
   onEdit: (updates: Partial<BPMRecord>) => void;
 };
 
+const duration = 6000; // to be replaced with user defined settings
+
+enum PlayStatus {
+  STOPPED,
+  PLAYING,
+  ERROR,
+}
+
 const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
   const ref = useRef<Swipeable>(null);
   const closeRow = () => ref.current?.close();
+  const [sample, setSample] = useState<Audio.Sound>();
+  const [status, updateStatus] = useState<PlayStatus>(PlayStatus.STOPPED);
+
+  const initializeSound = useCallback(async function () {
+    const buffer = await Audio.Sound.createAsync(
+      { uri: data.uri },
+      {
+        shouldPlay: false,
+        isMuted: false,
+        volume: 1.0,
+      },
+      (statusUpdate) => {
+        if (!statusUpdate.isLoaded) {
+          if (statusUpdate.error) {
+            updateStatus(PlayStatus.ERROR);
+          }
+        } else {
+          if (statusUpdate.isPlaying) {
+            updateStatus(PlayStatus.PLAYING);
+          }
+
+          if (statusUpdate.didJustFinish) {
+            updateStatus(PlayStatus.STOPPED);
+          }
+        }
+      }
+    );
+
+    setSample(buffer.sound);
+  }, []);
+
+  useEffect(() => {
+    initializeSound();
+  }, []);
 
   return (
     <Swipeable
@@ -43,7 +82,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
             {
               translateX: progress.interpolate({
                 inputRange: [0, 1],
-                outputRange: [160, 0],
+                outputRange: [240, 0],
               }),
             },
           ],
@@ -52,18 +91,18 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         return (
           <>
             <ActionItem
-              label="Delete"
-              color="#c1121f"
+              color="#ff5964"
               style={animation}
+              label={<Icon name="trash-2" size={24} color="#FFF" />}
               onPress={() => {
                 closeRow();
                 setTimeout(onRemove, 350);
               }}
             />
             <ActionItem
-              color="#08F"
-              label="Rename"
+              color="#35a7ff"
               style={animation}
+              label={<Icon name="edit-3" size={24} color="#FFF" />}
               onPress={() => {
                 Alert.prompt(
                   "Rename",
@@ -87,6 +126,30 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
                 );
               }}
             />
+            <ActionItem
+              color="#6bf178"
+              style={animation}
+              label={
+                <Icon
+                  size={24}
+                  color="#FFF"
+                  name={status === PlayStatus.PLAYING ? "pause" : "play"}
+                />
+              }
+              onPress={() => {
+                if (status === PlayStatus.PLAYING) {
+                  sample?.pauseAsync().then(() => {
+                    // sample.stopAsync().then (() => {
+                    //   sample.unloadAsync()
+                    // })
+                  });
+                } else {
+                  prepareToPlay().then(() => {
+                    sample?.playAsync();
+                  });
+                }
+              }}
+            />
           </>
         );
       }}
@@ -95,7 +158,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         <Column>
           <Title>{data.label}</Title>
           <Subtitle>
-						{formatDistanceToNow(fromUnixTime(data.timestamp))}
+            {formatDistanceToNow(fromUnixTime(data.timestamp))} ago
           </Subtitle>
         </Column>
         <Detail>

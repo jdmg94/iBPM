@@ -4,7 +4,7 @@ import { Audio, AVPlaybackStatusSuccess } from 'expo-av';
 const sleep = async (timeout: number) =>
 	new Promise(resolve => setTimeout(resolve, timeout));
 
-export const prepareAudioCapabilities = async () => {
+export const prepareToRecord = async () => {
 	const permissions = await Audio.getPermissionsAsync();
 
 	if (!permissions.granted && permissions.canAskAgain) {
@@ -17,6 +17,22 @@ export const prepareAudioCapabilities = async () => {
 		staysActiveInBackground: true,
 	});
 };
+
+export const getAudioFromURI = async (uri: string) => {
+	const { sound } = await Audio.Sound.createAsync({ uri }, {
+		shouldPlay: false,
+		isMuted: false,
+		volume: 1.0,
+	});
+
+	return sound;
+}
+
+
+
+export const prepareToPlay = async () => {
+	await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
+}
 
 type SampleRecording = {
 	sound: Audio.Sound;
@@ -63,17 +79,19 @@ export const captureAudioSample = async (
 
 	await sleep(duration);
 	await recording.stopAndUnloadAsync();
-	const uri = await recording.getURI()!;
-	const { sound } = await recording.createNewLoadedSoundAsync({
-		volume: 0,
-		isMuted: true,
-	});
+	const [uri, { sound }] = await Promise.all([
+		recording.getURI(),
+		recording.createNewLoadedSoundAsync({
+			volume: 0,
+			isMuted: true,
+		})
+	]);
 
 	// keep at 4x to increase PCM data collection speed
 	// faster rates reduce accuracy
 	await sound.setStatusAsync({ rate: 4 });
 
-	return { sound, uri };
+	return { sound, uri: uri! };
 };
 
 export const determineBPM = (sound: Audio.Sound): Promise<number> => new Promise((resolve, reject) => {

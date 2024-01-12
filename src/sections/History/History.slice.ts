@@ -5,6 +5,7 @@ export type BPMRecord = {
 	label: string;
 	bpm: number;
 	timestamp: number;
+	uri: string;
 };
 
 type HistoryState = {
@@ -18,6 +19,7 @@ const initialState: HistoryState = {
 			label: '2022-06-28, 4:17:35 a.m.',
 			bpm: 125,
 			timestamp: 1656374400,
+			uri: '',
 		},
 	],
 };

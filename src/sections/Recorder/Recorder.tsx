@@ -1,20 +1,22 @@
-import { Alert, Platform } from "react-native";
+import { Alert } from "react-native";
+import { useDispatch } from "@/hooks";
 import { getUnixTime } from "date-fns";
 import { nanoid } from "@reduxjs/toolkit";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
+import type { BPMRecord } from "@/types/BPMRecord";
+import { RecordStatus as Status } from "@/types/RecordStatus";
+import { documentDirectory, moveAsync } from "expo-file-system";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import {
-  withSpring,
-  useSharedValue,
-  useAnimatedStyle,
-  useAnimatedGestureHandler,
-} from "react-native-reanimated";
+  prepareToRecord,
+  determineBPM,
+  captureAudioSample,
+} from "@/AudioService";
 
 import Result from "./Result";
 import { addRecord } from "../History";
-import { useDispatch } from "../../hooks";
+import { useInteraction } from "./useInterations";
 import { RecordingLoader, ProcessingLoader } from "./Loaders";
-import { captureAudioSample, determineBPM } from "../../AudioService";
 import {
   Label,
   Handle,
@@ -23,88 +25,61 @@ import {
   ButtonOutline,
 } from "./Recorder.styles";
 
-export enum Status {
-  IDLE,
-  RECORDING,
-  PROCESSING,
-  DONE,
-  ERROR,
-}
-
-const initialOffset = Platform.select({
-  android: 340,
-  ios: 360,
-})!;
-
-const workingOffset = Platform.select({
-  android: 280,
-  ios: 280,
-})!;
+const duration = 6000; // to be replaced with user defined settings
 
 const Recorder = () => {
   const dispatch = useDispatch();
-  const [duration] = useState(6000);
-  const [result, setResult] = useState(0);
+  const [result, setResult] = useState<BPMRecord>();
   const [status, setStatus] = useState(Status.IDLE);
+  const { animation, verticalDrag } = useInteraction(status);
 
-  const translateY = useSharedValue(initialOffset);
-  const isDrawerOpen = useSharedValue(false);
-  const animation = useAnimatedStyle(() => {
-    if (status === Status.IDLE && !isDrawerOpen.value) {
-      translateY.value = withSpring(initialOffset, {
-        overshootClamping: true,
-      });
-    } else {
-      translateY.value = withSpring(isDrawerOpen.value ? 0 : workingOffset, {
-        overshootClamping: true,
-      });
-    }
+  const captureBPM = useCallback(async () => {
+    await prepareToRecord();
+    const id = nanoid();
+    const to = `${documentDirectory}recordings/${id}.m4a`;
 
-    return {
-      transform: [{ translateY: translateY.value }],
-    };
-  });
-
-  const verticalDrag = useAnimatedGestureHandler({
-    onStart: (_, context: { startY: number }) => {
-      context.startY = translateY.value;
-    },
-    onActive: (event, context) => {
-      const nextValue = context.startY + event.translationY;
-      if (nextValue >= 0 && nextValue <= initialOffset) {
-        translateY.value = nextValue;
-      }
-    },
-    onEnd: () => {
-      if (translateY.value >= 150) {
-        isDrawerOpen.value = false;
-      } else {
-        isDrawerOpen.value = true;
-      }
-    },
-  });
-
-  useEffect(() => {
-    switch (status) {
-      case Status.IDLE:
-      case Status.RECORDING:
-        isDrawerOpen.value = false;
-        break;
-
-      case Status.DONE:
-        isDrawerOpen.value = true;
-        break;
-    }
-  }, [status, result]);
-
-  const guessBPM = useCallback(async () => {
     setStatus(Status.RECORDING);
     const buffer = await captureAudioSample(duration);
     setStatus(Status.PROCESSING);
-    const bpm = await determineBPM(buffer.sound);
+    moveAsync({
+      from: buffer.uri,
+      to,
+    }).catch((err) => {
+      // @ts-ignore - might fail, don't want it to affect user experience tho
+      Alert.alert("something went wrong moving the file! " + err.message);
+    });
+    const tempo = await determineBPM(buffer.sound);
+
     setStatus(Status.DONE);
-    setResult(bpm);
-  }, [duration]);
+    setResult({
+      id,
+      label: id,
+      bpm: tempo,
+      uri: to,
+      timestamp: getUnixTime(new Date()),
+    });
+  }, []);
+
+  const addToHistory = () =>
+    Alert.prompt("Name The New Item", undefined, [
+      {
+        text: "Save",
+        onPress: (label) => {
+          if (!label || label.length == 0) {
+            addToHistory();
+          } else if (result) {
+            setStatus(Status.IDLE);
+            dispatch(
+              addRecord({
+                ...result,
+                label,
+              })
+            );
+          }
+        },
+      },
+      { text: "Cancel", style: "cancel" },
+    ]);
 
   return (
     <Wrapper style={animation}>
@@ -115,7 +90,7 @@ const Recorder = () => {
       )}
       {status === Status.IDLE && (
         <ButtonOutline>
-          <Button onPress={guessBPM} />
+          <Button onPress={captureBPM} />
         </ButtonOutline>
       )}
       {status === Status.RECORDING && <RecordingLoader duration={duration} />}
@@ -124,37 +99,19 @@ const Recorder = () => {
         {
           {
             [Status.IDLE]: "",
-            [Status.ERROR]: "Error",
             [Status.RECORDING]: "Capturing Audio Sample",
             [Status.PROCESSING]: "Calculating Beats",
             [Status.DONE]: " Approximately:",
+            [Status.ERROR]: "Error",
           }[status]
         }
       </Label>
       {status === Status.DONE && (
         <Result
-          bpm={result}
+          bpm={result?.bpm}
+          onRetry={captureBPM}
+          onSave={addToHistory}
           onComplete={() => setStatus(Status.IDLE)}
-          onRetry={guessBPM}
-          onSave={() =>
-            Alert.prompt("Name The New Item", undefined, [
-              {
-                text: "Save",
-                onPress: (label) => {
-                  setStatus(Status.IDLE);
-                  dispatch(
-                    addRecord({
-                      bpm: result,
-                      id: nanoid(),
-                      label: label!,
-                      timestamp: getUnixTime(new Date()),
-                    })
-                  );
-                },
-              },
-              { text: "Cancel", style: "cancel" },
-            ])
-          }
         />
       )}
     </Wrapper>

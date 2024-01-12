@@ -32,7 +32,7 @@ const History = () => {
 				<Item
 					data={item}
 					onEdit={editItem(item.id)}
-					onRemove={deleteItem(item.id)}
+					onRemove={deleteItem(item.id)}					
 				/>
 			)}
 		/>

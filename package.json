@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/native": "^11.11.0",
     "@emotion/react": "^11.11.3",
+    "@expo/vector-icons": "^13.0.0",
     "@react-native-async-storage/async-storage": "1.18.2",
     "@reduxjs/toolkit": "^2.0.1",
     "date-fns": "^3.1.0",
@@ -19,8 +20,10 @@
     "expo-av": "~13.4.1",
     "expo-file-system": "~15.4.5",
     "expo-font": "~11.4.0",
+    "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
     "expo-updates": "~0.18.19",
+    "human-id": "^4.1.0",
     "lottie-react-native": "5.1.6",
     "music-tempo": "github:jdmg94/music-tempo",
     "react": "^18.2.0",
@@ -32,9 +35,7 @@
     "react-native-web": "~0.19.6",
     "react-redux": "^9.0.4",
     "redux": "^5.0.1",
-    "redux-persist": "^6.0.0",
-    "expo-splash-screen": "~0.20.5",
-    "@expo/vector-icons": "^13.0.0"
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

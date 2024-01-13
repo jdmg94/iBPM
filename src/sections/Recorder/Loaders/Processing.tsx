@@ -21,7 +21,7 @@ export const ProcessingLoader = () => {
 				loop
 				autoSize
 				ref={loader}
-				source={require('../../../../assets/loading.json')}
+				source={require('assets/loading.json')}
 			/>
 		</Wrapper>
 	);

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-type SettingsState = {
+export type SettingsState = {
   minBpm: number
   maxBpm: number
   duration: number

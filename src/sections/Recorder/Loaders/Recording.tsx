@@ -36,7 +36,7 @@ export const RecordingLoader: FC<Loader> = ({onRest, duration = 15000}) => {
 			<Lottie
 				loop={false}
 				progress={captureProgress.current}
-				source={require('../../../../assets/recording.json')}
+				source={require('assets/recording.json')}
 				style={{
 					height: 70,
 				}}

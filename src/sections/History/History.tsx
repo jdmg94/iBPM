@@ -1,19 +1,19 @@
 import { FlatList } from "react-native";
 import { useTheme } from "@emotion/react";
-import { BPMRecord } from "@/types/BPMRecord";
+import { BPMRecord } from "@/sections/History";
 import { useDispatch, useSelector } from "@/hooks";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Header from "./Header";
 import Item, { Separator } from "./Item";
-import { deleteRecord, updateRecord } from "./History.slice";
+import { updateRecord, removeRecord } from "./History.slice";
 
 const History = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
   const data = useSelector((state) => state.History.data);
-  const deleteItem = (id: string) => () => dispatch(deleteRecord(id));
+  const deleteItem = (id: string) => () => dispatch(removeRecord(id));
   const editItem = (id: string) => (updates: Partial<BPMRecord>) =>
     dispatch(updateRecord({ id, updates }));
 

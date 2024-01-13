@@ -50,9 +50,9 @@ export const captureAudioSample = async (
 			linearPCMIsBigEndian: false,
 		};
 
-		const recorderStatus = await recording.getStatusAsync();
+		const recordingStatus = await recording.getStatusAsync();
 
-		if (!recorderStatus.canRecord) {
+		if (!recordingStatus.canRecord) {
 			await recording.prepareToRecordAsync({
 				keepAudioActiveHint: true,
 				web: {

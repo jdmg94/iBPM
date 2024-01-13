@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
-import { RecordStatus as Status } from '@/types/RecordStatus'
 import {
   withSpring,
   useSharedValue,
   useAnimatedStyle,
   useAnimatedGestureHandler,
 } from "react-native-reanimated";
+import { RecorderStatus as Status } from './Recorder.slice'
 
 const initialOffset = Platform.select({
   android: 340,

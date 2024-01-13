@@ -1,6 +1,6 @@
 import { Audio } from "expo-av";
 import { Alert } from "react-native";
-import { BPMRecord } from "@/types/BPMRecord";
+import { BPMRecord } from "@/sections/History";
 import { prepareToPlay } from "@/AudioService";
 import { Feather as Icon } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
@@ -53,11 +53,9 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         } else {
           if (statusUpdate.isPlaying) {
             updateStatus(PlayStatus.PLAYING);
+          } else if (!statusUpdate.didJustFinish) {
+            updateStatus(PlayStatus.PAUSED);
           } else {
-            updateStatus(PlayStatus.PAUSED)
-          }
-
-          if (statusUpdate.didJustFinish) {
             updateStatus(PlayStatus.STOPPED);
           }
         }
@@ -68,8 +66,13 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
   }, []);
 
   useEffect(() => {
-    initializeSound();
-  }, []);
+    if (sample && status === PlayStatus.STOPPED) {
+      closeRow();
+      sample.unloadAsync().then(() => {
+        setSample(undefined);
+      });
+    }
+  }, [status, sample]);
 
   return (
     <Swipeable
@@ -139,16 +142,13 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               }
               onPress={() => {
                 if (status === PlayStatus.PLAYING) {
-                  sample?.pauseAsync()
-                    .then(sample.stopAsync)
-                    .then (sample.unloadAsync)                    
-                    .then(() => {                      
-                      setSample(undefined);
-                    });
+                  sample?.pauseAsync();
                 } else {
-                  prepareToPlay().then(() => {
-                    sample?.playAsync();
-                  });
+                  prepareToPlay()
+                    .then(initializeSound)
+                    .then(() => {
+                      sample?.playAsync();
+                    });
                 }
               }}
             />

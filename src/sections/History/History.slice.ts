@@ -1,27 +1,20 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { documentDirectory, deleteAsync } from "expo-file-system";
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 export type BPMRecord = {
-	id: string;
-	bpm: number;
-	uri: string;
-	label: string;
-	timestamp: number;
+  id: string;
+  bpm: number;
+  uri: string;
+  label: string;
+  timestamp: number;
 };
 
-type HistoryState = {
+export type HistoryState = {
 	data: BPMRecord[];
 };
 
 const initialState: HistoryState = {
-	data: [
-		{
-			id: '1',
-			label: '2022-06-28, 4:17:35 a.m.',
-			bpm: 125,
-			timestamp: 1656374400,
-			uri: '',
-		},
-	],
+	data: [],
 };
 
 const History = createSlice({
@@ -45,12 +38,21 @@ const History = createSlice({
 				};
 			}
 		},
-		deleteRecord: (state: HistoryState, action: PayloadAction<string>) => {
-			state.data = state.data.filter(item => item.id !== action.payload);
-		},
 	},
+	extraReducers: (builder) => builder
+		.addCase(removeRecord.fulfilled, (state, action) => {
+			state.data = state.data.filter(item => item.id !== action.payload);
+		})
 });
 
-export const { addRecord, updateRecord, deleteRecord } = History.actions;
+export const { addRecord, updateRecord } = History.actions;
 
 export default History.reducer;
+
+export const removeRecord = createAsyncThunk<string, string>('History/removeRecord', async (id) => {
+	const fileLocation = `${documentDirectory}recordings/${id}.m4a`;
+
+	await deleteAsync(fileLocation);
+
+	return id;
+});

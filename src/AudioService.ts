@@ -36,14 +36,25 @@ type SampleRecording = {
 	sound: Audio.Sound;
 	uri: string;
 };
-export const captureAudioSample = async (
+
+type CaptureAudioSampleFunction = (
+	duration?: number,
+	quality?: 'high' | 'low'
+) => Promise<SampleRecording>;
+
+export const captureAudioSample: CaptureAudioSampleFunction = async (
 	duration = 15000,
-): Promise<SampleRecording> => {
+	quality = "high"
+) => {
 	const recording = new Audio.Recording();
 	const status = await recording.getStatusAsync();
 
 	if (!status.canRecord) {
-		const { ios, android, web } = Audio.RecordingOptionsPresets.HIGH_QUALITY;
+		const qualityLevel = quality === "high"
+			? Audio.RecordingOptionsPresets.HIGH_QUALITY
+			: Audio.RecordingOptionsPresets.LOW_QUALITY;
+
+		const { ios, android, web } = qualityLevel
 		const myOptions = {
 			numberOfChannels: 1,
 			linearPCMIsFloat: true,

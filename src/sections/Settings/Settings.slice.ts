@@ -5,13 +5,15 @@ export type SettingsState = {
   maxBpm: number
   duration: number
   isDarkMode: boolean
+  recordingQuality: 'low' | 'high'
 }
 
 const initialState: SettingsState = {
   minBpm: 80,
   maxBpm: 180,
   duration: 5000,
-  isDarkMode: true
+  isDarkMode: true,
+  recordingQuality: 'high',
 };
 
 const settingsSlice = createSlice({
@@ -29,6 +31,9 @@ const settingsSlice = createSlice({
     },
     setDarkMode: (state, action) => {
       state.isDarkMode = action.payload;
+    },
+    setRecordingQuality: (state, action) => {
+      state.recordingQuality = action.payload;
     }
   }
 });
@@ -38,5 +43,6 @@ export const {
   setMaxBpm,
   setDuration,
   setDarkMode,
+  setRecordingQuality,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

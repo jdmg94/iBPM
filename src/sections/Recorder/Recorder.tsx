@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { Alert } from "react-native";
 import { useDispatch, useSelector } from "@/hooks";
 import { PanGestureHandler } from "react-native-gesture-handler";
@@ -20,33 +21,38 @@ import {
 } from "./Recorder.styles";
 
 const Recorder = () => {
-  const dispatch = useDispatch();
   const result = useSelector((state) => state.Recorder.data);
   const status = useSelector((state) => state.Recorder.status);
   const duration = useSelector((state) => state.Settings.duration);
 
+  const dispatch = useDispatch();
   const { animation, verticalDrag } = useInteraction(status);
-
   const addToHistory = () =>
-    Alert.prompt("Name The New Item", undefined, [
-      {
-        text: "Save",
-        onPress: (label) => {
-          if (!label || label.length == 0) {
-            addToHistory();
-          } else if (result) {
-            dispatch(updateStatus(Status.IDLE));
-            dispatch(
-              addRecord({
-                ...result,
-                label,
-              })
-            );
-          }
+    Alert.prompt(
+      "Save as",
+      undefined,
+      [
+        {
+          text: "Save",
+          onPress: (label) => {
+            if (!label || label.length == 0) {
+              addToHistory();
+            } else if (result) {
+              dispatch(updateStatus(Status.IDLE));
+              dispatch(
+                addRecord({
+                  ...result,
+                  label,
+                })
+              );
+            }
+          },
         },
-      },
-      { text: "Cancel", style: "cancel" },
-    ]);
+        { text: "Cancel", style: "cancel" },
+      ],
+      "plain-text",
+      format(new Date(), "Pp")
+    );
 
   return (
     <Wrapper style={animation}>

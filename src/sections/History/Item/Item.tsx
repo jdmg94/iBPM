@@ -9,13 +9,13 @@ import { FC, useRef, useState, useEffect, useCallback } from "react";
 
 import ActionItem from "./Action";
 import {
-  Wrapper,
+  Label,
   Title,
-  Subtitle,
   Detail,
   Column,
-  Label,
+  Wrapper,
   Sublabel,
+  Subtitle,
 } from "./Item.styles";
 
 type HistoryItemProps = {
@@ -25,10 +25,10 @@ type HistoryItemProps = {
 };
 
 enum PlayStatus {
-  STOPPED,
-  PLAYING,
-  PAUSED,
   ERROR,
+  PAUSED,
+  PLAYING,
+  STOPPED,
 }
 
 const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
@@ -36,6 +36,12 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
   const closeRow = () => ref.current?.close();
   const [sample, setSample] = useState<Audio.Sound>();
   const [status, updateStatus] = useState<PlayStatus>(PlayStatus.STOPPED);
+
+  const disposeSample = () => {
+    sample?.unloadAsync().then(() => {
+      setSample(undefined);
+    });
+  };
 
   const initializeSound = useCallback(async function () {
     const buffer = await Audio.Sound.createAsync(
@@ -68,9 +74,6 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
   useEffect(() => {
     if (sample && status === PlayStatus.STOPPED) {
       closeRow();
-      sample.unloadAsync().then(() => {
-        setSample(undefined);
-      });
     }
   }, [status, sample]);
 
@@ -80,6 +83,8 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
       friction={2}
       leftThreshold={30}
       rightThreshold={40}
+      onSwipeableWillOpen={initializeSound}
+      onSwipeableWillClose={disposeSample}
       renderRightActions={(progress) => {
         const animation = {
           transform: [
@@ -95,7 +100,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         return (
           <>
             <ActionItem
-              color="#ff5964"
+              color="#ff5964A1"
               style={animation}
               label={<Icon name="trash-2" size={24} color="#FFF" />}
               onPress={() => {
@@ -104,7 +109,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               }}
             />
             <ActionItem
-              color="#35a7ff"
+              color="#35a7ffA1"
               style={animation}
               label={<Icon name="edit-3" size={24} color="#FFF" />}
               onPress={() => {
@@ -131,7 +136,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               }}
             />
             <ActionItem
-              color="#6bf178"
+              color="#6bf178A1"
               style={animation}
               label={
                 <Icon
@@ -143,12 +148,11 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               onPress={() => {
                 if (status === PlayStatus.PLAYING) {
                   sample?.pauseAsync();
-                } else {
-                  prepareToPlay()
-                    .then(initializeSound)
-                    .then(() => {
-                      sample?.playAsync();
-                    });
+                }
+                if (status === PlayStatus.PAUSED) {
+                  prepareToPlay().then(() => {
+                    sample?.playAsync();
+                  });
                 }
               }}
             />

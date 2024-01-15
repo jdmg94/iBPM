@@ -4,13 +4,19 @@ import { Audio, AVPlaybackStatusSuccess } from 'expo-av';
 const sleep = async (timeout: number) =>
 	new Promise(resolve => setTimeout(resolve, timeout));
 
-export const prepareToRecord = async () => {
+export const getAudioPermissions = async () => {
 	const permissions = await Audio.getPermissionsAsync();
 
 	if (!permissions.granted && permissions.canAskAgain) {
 		await Audio.requestPermissionsAsync();
 	}
+}
 
+export const prepareToPlay = async () => {
+	await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
+}
+
+export const prepareToRecord = async () => {
 	await Audio.setAudioModeAsync({
 		allowsRecordingIOS: true,
 		playsInSilentModeIOS: true,
@@ -26,10 +32,6 @@ export const getAudioFromURI = async (uri: string) => {
 	});
 
 	return sound;
-}
-
-export const prepareToPlay = async () => {
-	await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
 }
 
 type SampleRecording = {
@@ -111,7 +113,7 @@ export const determineBPM = (sound: Audio.Sound): Promise<number> => new Promise
 	}, 3000);
 
 	sound.setOnPlaybackStatusUpdate(status => {
-		if ((status as AVPlaybackStatusSuccess).didJustFinish) {
+		if (status.isLoaded && status.didJustFinish) {
 			clearTimeout(timeoutRef);
 			if (linearPCMData.length > 0) {
 				sound.unloadAsync();

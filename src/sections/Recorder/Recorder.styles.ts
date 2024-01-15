@@ -9,6 +9,7 @@ export const Wrapper = styled(Animated.View)`
 	position: absolute;
 	height: 60%;
 	width: 100%;
+	max-width: 400px;
 	border-radius: 24px 24px 0px 0px;
 	background-color: ${props => props.theme.colors.accent};
 `;

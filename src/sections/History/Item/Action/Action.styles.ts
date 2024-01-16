@@ -16,7 +16,6 @@ export const Rim = styled.View<{
 	width: 75px;
 
 	border-radius: 12px;
-	border: 1px solid ${props => props.color};
 	align-items: center;
 	justify-content: center;
 `;

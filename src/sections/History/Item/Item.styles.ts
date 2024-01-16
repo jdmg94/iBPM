@@ -7,7 +7,6 @@ export const Wrapper = styled.View`
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
-	border: 1px solid ${props => props.theme.colors.text};
 	border-radius: 16px;
 	margin: 8px;
 `;
@@ -19,12 +18,13 @@ export const Column = styled.View`
 
 export const Title = styled.Text`
 	font-size: 20px;
+	font-weight: 400;
 	color: ${props => props.theme.colors.text};
 `;
 
 export const Subtitle = styled.Text`
 	font-size: 14px;
-	font-weight: 300;
+	font-weight: 200;	
 	color: ${props => props.theme.colors.text};
 `;
 

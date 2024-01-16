@@ -39,7 +39,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
   const [sample, setSample] = useState<Audio.Sound>();
   const [status, updateStatus] = useState<PlayStatus>(PlayStatus.STOPPED);
 
-  const disposeSample = () => {
+  const disposeSound = () => {
     sample?.unloadAsync().then(() => {
       setSample(undefined);
     });
@@ -86,7 +86,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
       leftThreshold={30}
       rightThreshold={40}
       onSwipeableWillOpen={initializeSound}
-      onSwipeableWillClose={disposeSample}
+      onSwipeableWillClose={disposeSound}
       renderRightActions={(progress) => {
         const animation = {
           transform: [

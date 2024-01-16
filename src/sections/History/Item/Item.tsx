@@ -1,4 +1,5 @@
 import { Audio } from "expo-av";
+import { useTheme } from "@/hooks";
 import { Alert } from "react-native";
 import { BPMRecord } from "@/sections/History";
 import { prepareToPlay } from "@/AudioService";
@@ -32,6 +33,7 @@ enum PlayStatus {
 }
 
 const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
+  const theme = useTheme();
   const ref = useRef<Swipeable>(null);
   const closeRow = () => ref.current?.close();
   const [sample, setSample] = useState<Audio.Sound>();
@@ -100,8 +102,8 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         return (
           <>
             <ActionItem
-              color="#ff5964A1"
               style={animation}
+              color={theme.colors.delete}
               label={<Icon name="trash-2" size={24} color="#FFF" />}
               onPress={() => {
                 closeRow();
@@ -109,8 +111,8 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               }}
             />
             <ActionItem
-              color="#35a7ffA1"
               style={animation}
+              color={theme.colors.info}
               label={<Icon name="edit-3" size={24} color="#FFF" />}
               onPress={() => {
                 Alert.prompt(
@@ -136,8 +138,8 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               }}
             />
             <ActionItem
-              color="#6bf178A1"
               style={animation}
+              color={theme.colors.success}
               label={
                 <Icon
                   size={24}

@@ -1,5 +1,5 @@
+import { useTheme } from "@/hooks";
 import { FlatList } from "react-native";
-import { useTheme } from "@emotion/react";
 import { BPMRecord } from "@/sections/History";
 import { useDispatch, useSelector } from "@/hooks";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

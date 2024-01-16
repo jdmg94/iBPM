@@ -62,14 +62,20 @@ export const captureRecording = createAsyncThunk<
   dispatch(updateStatus(RecorderStatus.RECORDING));
   const { uri, sound } = await captureAudioSample(duration, recordingQuality);
   dispatch(updateStatus(RecorderStatus.PROCESSING));
-
+  const tempo = await determineBPM(sound);
+  dispatch(updateStatus(RecorderStatus.DONE));
+  // try {
+    
+  // } catch (error) {    
+  //   console.log('bpm determinaion failed...');
+    // @ts-ignore
+    // console.log(error.message);
+  // }
   // optimistically move, don't await
   moveAsync({
     from: uri,
     to,
   });
-  const tempo = await determineBPM(sound);
-  dispatch(updateStatus(RecorderStatus.DONE));
 
   const now = new Date()
   const label = format(now, 'Pp');

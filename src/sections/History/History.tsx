@@ -21,10 +21,10 @@ const History = () => {
     <FlatList
       data={data}
       keyExtractor={({ id }) => id}
+      ListHeaderComponent={<Header />}
       showsVerticalScrollIndicator={false}
       ItemSeparatorComponent={() => <Separator />}
       contentContainerStyle={{ paddingBottom: 230 }}
-      ListHeaderComponent={<Header>All Records</Header>}
       renderItem={({ item }) => (
         <Item
           data={item}

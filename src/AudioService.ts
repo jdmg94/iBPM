@@ -1,5 +1,5 @@
-import musicTempo from 'music-tempo';
-import { Audio, AVPlaybackStatusSuccess } from 'expo-av';
+import musicTempo from '@superiortech/music-tempo';
+import { Audio } from 'expo-av';
 
 const sleep = async (timeout: number) =>
 	new Promise(resolve => setTimeout(resolve, timeout));
@@ -118,7 +118,7 @@ export const determineBPM = (sound: Audio.Sound): Promise<number> => new Promise
 			if (linearPCMData.length > 0) {
 				sound.unloadAsync();
 				const { tempo } = musicTempo(linearPCMData, {
-					minBeatInterval: 0.375 // max 160bpm
+					minBeatInterval: 0.375 // 60 / 0.375 =  max 160bpm
 				});
 
 				resolve(Math.floor(tempo));

@@ -1,5 +1,6 @@
-import { format } from "date-fns";
 import { Alert } from "react-native";
+import { useState, useEffect } from "react";
+import { getReadableId } from "@/utils/human-id";
 import { useDispatch, useSelector } from "@/hooks";
 import { PanGestureHandler } from "react-native-gesture-handler";
 
@@ -21,6 +22,7 @@ import {
 } from "./Recorder.styles";
 
 const Recorder = () => {
+  const [id, setId] = useState(getReadableId());
   const result = useSelector((state) => state.Recorder.data);
   const status = useSelector((state) => state.Recorder.status);
   const duration = useSelector((state) => state.Settings.duration);
@@ -43,6 +45,7 @@ const Recorder = () => {
                 addRecord({
                   ...result,
                   label,
+                  id,
                 })
               );
             }
@@ -51,8 +54,14 @@ const Recorder = () => {
         { text: "Cancel", style: "cancel" },
       ],
       "plain-text",
-      format(new Date(), "Pp")
+      id
     );
+
+  useEffect(() => {
+    if (status === Status.IDLE) {
+      setId(getReadableId());
+    }
+  }, [status]);
 
   return (
     <Wrapper style={animation}>
@@ -63,7 +72,7 @@ const Recorder = () => {
       )}
       {status === Status.IDLE && (
         <ButtonOutline>
-          <Button onPress={() => dispatch(captureRecording())} />
+          <Button onPress={() => dispatch(captureRecording(id))} />
         </ButtonOutline>
       )}
       {status === Status.RECORDING && <RecordingLoader duration={duration} />}
@@ -83,7 +92,7 @@ const Recorder = () => {
         <Result
           bpm={result?.bpm}
           onSave={addToHistory}
-          onRetry={() => dispatch(captureRecording())}
+          onRetry={() => dispatch(captureRecording(id))}
           onComplete={() => dispatch(updateStatus(Status.IDLE))}
         />
       )}

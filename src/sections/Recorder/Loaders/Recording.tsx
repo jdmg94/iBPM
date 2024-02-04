@@ -1,46 +1,45 @@
-import styled from '@emotion/native';
-import {Animated} from 'react-native';
-import Lottie from 'lottie-react-native';
-import {useEffect, useRef, FC} from 'react';
+import styled from "@emotion/native";
+import { useEffect, useRef, FC } from "react";
+import animation from "assets/recording.json";
+import LottieView from "lottie-react-native";
+import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 
 type Loader = {
-	duration?: number;
-	onRest?: () => void;
+  duration?: number;
+  onRest?: () => void;
 };
 
 const Wrapper = styled.View`
-	height: 120px;
-	align-items: center;
-	justify-content: center;
+  height: 120px;
+  width: 100%;
+  margin-top: 16px;
+  align-items: center;
+  justify-content: center;
 `;
 
-export const RecordingLoader: FC<Loader> = ({onRest, duration = 15000}) => {
-	const captureProgress = useRef(new Animated.Value(0));
+const Lottie = Animated.createAnimatedComponent(LottieView);
 
-	useEffect(() => {
-		captureProgress.current.addListener(Progress => {
-			if (Progress.value === 1) {
-				onRest?.();
-			}
-		});
+export const RecordingLoader: FC<Loader> = ({ onRest, duration = 15000 }) => {
+  const progress = useSharedValue(0);
 
-		Animated.timing(captureProgress.current, {
-			toValue: 1,
-			duration,
-			useNativeDriver: true,
-		}).start();
-	}, []);
+  useEffect(() => {
+    progress.value = withTiming(1, {
+      duration,
+    });
+  }, []);
 
-	return (
-		<Wrapper>
-			<Lottie
-				loop={false}
-				progress={captureProgress.current}
-				source={require('assets/recording.json')}
-				style={{
-					height: 70,
-				}}
-			/>
-		</Wrapper>
-	);
+  return (
+    <Wrapper>
+      <Lottie
+        loop={false}
+        source={animation}
+        progress={progress}
+        style={{
+          height: 120,
+          flex: 1,
+          width: "95%",
+        }}
+      />
+    </Wrapper>
+  );
 };

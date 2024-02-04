@@ -1,4 +1,4 @@
-import styled, {css} from '@emotion/native';
+import styled from '@emotion/native';
 
 export const Title = styled.Text`
 	font-weight: 200;

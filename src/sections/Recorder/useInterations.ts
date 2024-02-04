@@ -4,7 +4,7 @@ import {
   withSpring,
   useSharedValue,
   useAnimatedStyle,
-  useAnimatedGestureHandler,
+  useAnimatedGestureHandler,  
 } from "react-native-reanimated";
 import { RecorderStatus as Status } from './Recorder.slice'
 
@@ -13,10 +13,7 @@ const initialOffset = Platform.select({
   ios: 360,
 })!;
 
-const workingOffset = Platform.select({
-  android: 280,
-  ios: 280,
-})!;
+const workingOffset = 270;
 
 export const useInteraction = (status: Status) => {
   const translateY = useSharedValue(initialOffset);

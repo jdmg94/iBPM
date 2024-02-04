@@ -1,5 +1,4 @@
 import { format, getUnixTime } from 'date-fns';
-import { getReadableId } from "@/utils/human-id";
 import type { BPMRecord } from "@/sections/History";
 import { SettingsState } from "@/sections/Settings";
 import { documentDirectory, moveAsync } from "expo-file-system";
@@ -45,17 +44,19 @@ export const recorderSlice = createSlice({
 export const { updateStatus } = recorderSlice.actions;
 export default recorderSlice.reducer;
 
+
+
 export const captureRecording = createAsyncThunk<
   BPMRecord,
-  void,
+  string,
   {
     state: {
       Settings: SettingsState
     }
   }
->('Recorder/capture', async (_, { getState, dispatch }) => {
+>('Recorder/capture', async (id, { getState, dispatch }) => {
   await prepareToRecord();
-  const id = getReadableId();
+
   const { duration, recordingQuality } = getState().Settings;
   const to = `${documentDirectory}recordings/${id}.m4a`;
 
@@ -64,13 +65,6 @@ export const captureRecording = createAsyncThunk<
   dispatch(updateStatus(RecorderStatus.PROCESSING));
   const tempo = await determineBPM(sound);
   dispatch(updateStatus(RecorderStatus.DONE));
-  // try {
-    
-  // } catch (error) {    
-  //   console.log('bpm determinaion failed...');
-    // @ts-ignore
-    // console.log(error.message);
-  // }
   // optimistically move, don't await
   moveAsync({
     from: uri,

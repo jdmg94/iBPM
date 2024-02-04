@@ -1,6 +1,6 @@
 import '@emotion/react';
 
-type Colors = 'text' | 'accent' | 'background' | 'delete' | 'info' | 'success'
+type Colors = 'text' | 'subtext' | 'accent' | 'background' | 'delete' | 'info' | 'success' | 'segmentedControlAccent'
 
 declare module '@emotion/react' {
 	export interface Theme {

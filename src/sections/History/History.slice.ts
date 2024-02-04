@@ -1,12 +1,12 @@
-import { documentDirectory, deleteAsync } from "expo-file-system";
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { documentDirectory, deleteAsync, getInfoAsync } from "expo-file-system";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 export type BPMRecord = {
-  id: string;
-  bpm: number;
-  uri: string;
-  label: string;
-  timestamp: number;
+	id: string;
+	bpm: number;
+	uri: string;
+	label: string;
+	timestamp: number;
 };
 
 export type HistoryState = {
@@ -46,13 +46,15 @@ const History = createSlice({
 });
 
 export const { addRecord, updateRecord } = History.actions;
-
 export default History.reducer;
 
 export const removeRecord = createAsyncThunk<string, string>('History/removeRecord', async (id) => {
 	const fileLocation = `${documentDirectory}recordings/${id}.m4a`;
-
-	await deleteAsync(fileLocation);
+	const info = await getInfoAsync(fileLocation);
+	
+	if (info.exists) {
+		await deleteAsync(fileLocation);
+	}
 
 	return id;
 });

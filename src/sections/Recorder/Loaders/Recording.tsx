@@ -2,11 +2,10 @@ import styled from "@emotion/native";
 import { useEffect, useRef, FC } from "react";
 import animation from "assets/recording.json";
 import LottieView from "lottie-react-native";
-import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { useSharedValue, withTiming, Easing } from "react-native-reanimated";
 
 type Loader = {
   duration?: number;
-  onRest?: () => void;
 };
 
 const Wrapper = styled.View`
@@ -19,12 +18,13 @@ const Wrapper = styled.View`
 
 const Lottie = Animated.createAnimatedComponent(LottieView);
 
-export const RecordingLoader: FC<Loader> = ({ onRest, duration = 15000 }) => {
+export const RecordingLoader: FC<Loader> = ({ duration = 15000 }) => {
   const progress = useSharedValue(0);
 
   useEffect(() => {
     progress.value = withTiming(1, {
       duration,
+      easing: Easing.linear
     });
   }, []);
 
@@ -36,7 +36,6 @@ export const RecordingLoader: FC<Loader> = ({ onRest, duration = 15000 }) => {
         progress={progress}
         style={{
           height: 120,
-          flex: 1,
           width: "95%",
         }}
       />

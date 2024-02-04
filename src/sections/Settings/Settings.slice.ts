@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export type SettingsState = {
   minBpm: number
@@ -9,8 +9,8 @@ export type SettingsState = {
 }
 
 const initialState: SettingsState = {
-  minBpm: 80,
-  maxBpm: 180,
+  minBpm: 80, // 60 / 0.75 = min 80bpm
+  maxBpm: 160, // 60 / 0.375 = max 160bpm
   duration: 5000,
   theme: 'system',
   recordingQuality: 'high',
@@ -26,7 +26,7 @@ const settingsSlice = createSlice({
     setMaxBpm: (state, action) => {
       state.maxBpm = action.payload;
     },
-    setDuration: (state, action) => {
+    setDuration: (state, action: PayloadAction<number>) => {
       state.duration = action.payload;
     },
     setTheme: (state, action) => {

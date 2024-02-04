@@ -58,7 +58,7 @@ const Recorder = () => {
     );
 
   useEffect(() => {
-    if (status === Status.IDLE) {
+    if (status === Status.RECORDING) {
       setId(getReadableId());
     }
   }, [status]);

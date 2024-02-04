@@ -1,5 +1,5 @@
-import musicTempo from '@superiortech/music-tempo';
 import { Audio } from 'expo-av';
+import musicTempo from '@superiortech/music-tempo';
 
 const sleep = async (timeout: number) =>
 	new Promise(resolve => setTimeout(resolve, timeout));
@@ -105,9 +105,24 @@ export const captureAudioSample: CaptureAudioSampleFunction = async (
 	return { sound, uri: uri! };
 };
 
-export const determineBPM = (sound: Audio.Sound): Promise<number> => new Promise((resolve, reject) => {
-	const linearPCMData: number[] = [];
+type BpmOptions = {
+	minBeatInterval: number;
+	maxBeatInterval: number;
+}
 
+const defaultBPMOptions: BpmOptions = {
+	minBeatInterval: 0.375, // 60 / 0.375 = max 160bpm
+	maxBeatInterval: 0.75 // 60 / 0.75 = min 80bpm
+}
+
+export const determineBPM = (
+	sound: Audio.Sound,
+	{
+		minBeatInterval = 0.375,
+		maxBeatInterval = 0.75
+	}: BpmOptions = defaultBPMOptions
+): Promise<number> => new Promise((resolve, reject) => {
+	const linearPCMData: number[] = [];
 	const timeoutRef = setTimeout(() => {
 		reject('No information could be collected from sample');
 	}, 3000);
@@ -117,10 +132,11 @@ export const determineBPM = (sound: Audio.Sound): Promise<number> => new Promise
 			clearTimeout(timeoutRef);
 			if (linearPCMData.length > 0) {
 				sound.unloadAsync();
-				const { tempo } = musicTempo(linearPCMData, {
-					minBeatInterval: 0.375 // 60 / 0.375 =  max 160bpm
-				});
 
+				const { tempo } = musicTempo(linearPCMData, {
+					minBeatInterval,
+					maxBeatInterval,
+				});
 				resolve(Math.floor(tempo));
 			} else {
 				reject('No information could be collected from sample');

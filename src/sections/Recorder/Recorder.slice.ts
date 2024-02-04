@@ -57,13 +57,16 @@ export const captureRecording = createAsyncThunk<
 >('Recorder/capture', async (id, { getState, dispatch }) => {
   await prepareToRecord();
 
-  const { duration, recordingQuality } = getState().Settings;
+  const { duration, recordingQuality, minBpm, maxBpm } = getState().Settings;
   const to = `${documentDirectory}recordings/${id}.m4a`;
 
   dispatch(updateStatus(RecorderStatus.RECORDING));
   const { uri, sound } = await captureAudioSample(duration, recordingQuality);
   dispatch(updateStatus(RecorderStatus.PROCESSING));
-  const tempo = await determineBPM(sound);
+  const tempo = await determineBPM(sound, {
+    minBeatInterval: 60 / maxBpm,
+    maxBeatInterval: 60 / minBpm
+  });
   dispatch(updateStatus(RecorderStatus.DONE));
   // optimistically move, don't await
   moveAsync({

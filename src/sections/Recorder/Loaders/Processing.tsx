@@ -1,6 +1,6 @@
 import styled from "@emotion/native";
 import Lottie from "lottie-react-native";
-import animation from "assets/loading.json";
+import animation from "assets/dj-deck.json";
 
 const Wrapper = styled.View`
   height: 120px;
@@ -15,10 +15,12 @@ export const ProcessingLoader = () => (
     <Lottie
       loop
       autoPlay
+      resizeMode="cover"
       source={animation}
       style={{
-        height: 75,
+        height: 125,
         width: "100%",
+        marginTop: 32,
       }}
     />
   </Wrapper>

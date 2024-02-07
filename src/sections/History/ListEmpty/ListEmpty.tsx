@@ -12,7 +12,7 @@ const ListEmpty = () => (
         width: "100%",
       }}
     />
-    <Label>No records yet..</Label>
+    <Label>No records found...</Label>
   </Container>
 );
 

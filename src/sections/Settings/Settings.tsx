@@ -1,18 +1,17 @@
 import { router } from "expo-router";
 import { useTheme } from "@emotion/react";
-import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "@/hooks";
 import { Feather as Icon } from "@expo/vector-icons";
-import { RangeSlider } from "@react-native-assets/slider";
+import { RangeSlider, Slider } from "@react-native-assets/slider";
 import { Switch, Keyboard, TouchableWithoutFeedback } from "react-native";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import {
+  Row,
+  Span,
   Title,
   Label,
-  Span,
-  Subtext,
-  Row,
   Input,
+  Subtext,
   Container,
 } from "./Settings.styles";
 import {
@@ -22,6 +21,7 @@ import {
   setDuration,
   setRecordingQuality,
 } from "./Settings.slice";
+import NumberInput from "./NumberInput";
 
 const Settings = () => {
   const theme = useTheme();
@@ -34,20 +34,6 @@ const Settings = () => {
   const recordingQuality = useSelector(
     (state) => state.Settings.recordingQuality
   );
-  const [durationBuffer, setDurationBuffer] = useState(`${duration}`);
-
-  useEffect(() => {
-    if (durationBuffer.length > 0) {
-      const parsedValue = parseInt(durationBuffer, 10);
-      if (parsedValue > 0 && parsedValue !== duration) {
-        dispatch(setDuration(parsedValue));
-      } else if (durationBuffer.length === 1) {
-        dispatch(setDuration(0));
-      }
-    } else {
-      dispatch(setDuration(0));
-    }
-  }, [durationBuffer]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -72,7 +58,7 @@ const Settings = () => {
                 light: 0,
                 dark: 1,
                 system: 2,
-              }[themePref]
+              }[themePref] ?? 2
             }
             onChange={(evt) => {
               const selectedIndex = evt.nativeEvent.selectedSegmentIndex;
@@ -96,18 +82,31 @@ const Settings = () => {
         <Row justifyContent="space-between">
           <Label>Duration:</Label>
           <Row>
-            <Input
-              width={80}
-              textAlign="right"
-              keyboardType="numeric"
-              value={durationBuffer}
-              onChangeText={(value: string) => {
-                setDurationBuffer(value);
+            <NumberInput
+              value={duration}
+              onChange={(value) => {
+                if (value >= 3000 && value <= 8000) {
+                  dispatch(setDuration(value));
+                } else {
+                  dispatch(setDuration(duration));
+                }
               }}
             />
             <Span marginLeft={2}>ms</Span>
           </Row>
         </Row>
+        <Slider
+          step={100}
+          thumbSize={20}
+          value={duration}
+          minimumValue={3000}
+          maximumValue={8000}
+          style={{ marginHorizontal: 16 }}
+          maximumTrackTintColor={theme.colors.accent}
+          thumbTintColor={theme.colors.segmentedControlAccent}
+          minimumTrackTintColor={theme.colors.segmentedControlAccent}
+          onValueChange={(nextValue) => dispatch(setDuration(nextValue))}
+        />
         <Row justifyContent="space-between">
           <Label>Detection Range:</Label>
           <Row>
@@ -131,10 +130,10 @@ const Settings = () => {
         </Row>
         <RangeSlider
           step={1}
-          thumbSize={18}
-          range={[80, 160]}
+          thumbSize={20}
           minimumValue={60}
           maximumValue={215}
+          range={[minBPM, maxBPM]}
           style={{ marginHorizontal: 16 }}
           outboundColor={theme.colors.accent}
           inboundColor={theme.colors.segmentedControlAccent}
@@ -149,9 +148,9 @@ const Settings = () => {
           }}
         />
         <Subtext marginTop={16}>
-          <Span fontWeight="bold">Warning: </Span>Be careful, the more value of
-          maximum BPM, the more probability of 2x-BPM errors (e.g. if max BPM =
-          210 and real tempo of a song 102 BPM, in the end you can get 204 BPM).
+          <Span fontWeight="bold">Warning: </Span> the more value of maximum
+          BPM, the more probability of 2x-BPM errors (e.g. if max BPM = 210 and
+          real tempo of a song 102 BPM, in the end you can get 204 BPM).
         </Subtext>
       </Container>
     </TouchableWithoutFeedback>

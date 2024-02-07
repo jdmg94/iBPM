@@ -30,7 +30,7 @@ const NumberInput = ({ value: initialValue, onChange }: NumberInputProps) => {
     <Input
       width={80}
       textAlign="right"
-      keyboardType="numeric"
+      inputMode="numeric"
       value={value}
       onChangeText={(nextValue: string) => {
         setValue(nextValue);

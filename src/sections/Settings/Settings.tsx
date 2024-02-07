@@ -1,19 +1,11 @@
 import { router } from "expo-router";
-import { useTheme } from "@emotion/react";
-import { useDispatch, useSelector } from "@/hooks";
+import Header from "@/components/Header";
 import { Feather as Icon } from "@expo/vector-icons";
+import { useDispatch, useSelector, useTheme } from "@/hooks";
 import { RangeSlider, Slider } from "@react-native-assets/slider";
 import { Switch, Keyboard, TouchableWithoutFeedback } from "react-native";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-import {
-  Row,
-  Span,
-  Title,
-  Label,
-  Input,
-  Subtext,
-  Container,
-} from "./Settings.styles";
+import { Row, Span, Label, Input, Subtext, Container } from "./Settings.styles";
 import {
   setTheme,
   setMinBpm,
@@ -38,15 +30,18 @@ const Settings = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>
-        <Row justifyContent="flex-start">
-          <Icon
-            size={32}
-            name="arrow-left"
-            onPress={router.back}
-            color={theme.colors.text}
-          />
-          <Title>Settings</Title>
-        </Row>
+        <Header
+          title="Settings"
+          style={{ marginBottom: 16 }}
+          left={
+            <Icon
+              size={32}
+              name="arrow-left"
+              onPress={router.back}
+              color={theme.colors.text}
+            />
+          }
+        />
         <Row justifyContent="space-between">
           <Label>Theme:</Label>
           <SegmentedControl

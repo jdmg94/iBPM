@@ -1,4 +1,5 @@
-import styled from '@emotion/native';
+import styled from "@emotion/native";
+import { flexbox, space } from "styled-system";
 
 export const Title = styled.Text`
 	font-weight: 600;
@@ -6,11 +7,10 @@ export const Title = styled.Text`
 	color: ${props => props.theme.colors.text};
 `;
 
-export const Row = styled.View`
-  flex: 1;
-	padding: 8px;
-	height: 68px;
+export const Container = styled.View`
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
+	height: ${props => props.theme.spacing.header}px;
+	${flexbox}
 `

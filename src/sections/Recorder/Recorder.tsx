@@ -82,7 +82,7 @@ const Recorder = () => {
           {
             [Status.IDLE]: "",
             [Status.RECORDING]: "Capturing Audio Sample",
-            [Status.PROCESSING]: "Calculating Beats",
+            [Status.PROCESSING]: "Detecting Beats",
             [Status.DONE]: " Approximately:",
             [Status.ERROR]: "Error",
           }[status]

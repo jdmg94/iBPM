@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "@/hooks";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Header from "./Header";
+import ListEmpty from "./ListEmpty";
 import Item, { Separator } from "./Item";
 import { updateRecord, removeRecord } from "./History.slice";
 
@@ -22,8 +23,10 @@ const History = () => {
       data={data}
       keyExtractor={({ id }) => id}
       ListHeaderComponent={<Header />}
+      ListEmptyComponent={<ListEmpty />}
       showsVerticalScrollIndicator={false}
       ItemSeparatorComponent={() => <Separator />}
+      ListHeaderComponentStyle={{ height: 68 }}
       contentContainerStyle={{ paddingBottom: 230 }}
       renderItem={({ item }) => (
         <Item

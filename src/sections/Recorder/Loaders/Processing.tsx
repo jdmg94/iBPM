@@ -3,9 +3,9 @@ import Lottie from "lottie-react-native";
 import animation from "assets/dj-deck.json";
 
 const Wrapper = styled.View`
-  height: 120px;
+  height: 130px;
   width: 100%;
-	margin-top: 16px;
+	margin: 16px 0px;
   align-items: center;
   justify-content: center;
 `;
@@ -18,9 +18,9 @@ export const ProcessingLoader = () => (
       resizeMode="cover"
       source={animation}
       style={{
-        height: 125,
+        height: "100%",
         width: "100%",
-        marginTop: 32,
+        marginTop: 16,
       }}
     />
   </Wrapper>

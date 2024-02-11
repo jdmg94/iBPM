@@ -1,12 +1,6 @@
 import { FC } from "react";
-import {
-  Button,
-  Wrapper,
-  Label,
-  Title,
-  Subtitle,
-  TextGroup,
-} from "./Result.styles";
+import { Span } from "@/components/Text";
+import { Button, Wrapper, TextGroup } from "./Result.styles";
 
 type ResultProps = {
   bpm?: number;
@@ -18,17 +12,21 @@ type ResultProps = {
 const Result: FC<ResultProps> = ({ bpm = 0, onComplete, onRetry, onSave }) => (
   <Wrapper>
     <TextGroup>
-      <Title>{bpm}</Title>
-      <Subtitle>BPM</Subtitle>
+      <Span fontWeight={200} fontSize={80}>
+        {bpm}
+      </Span>
+      <Span fontWeight="bold" fontSize={64}>
+        BPM
+      </Span>
     </TextGroup>
     <Button onPress={onSave}>
-      <Label>Save</Label>
+      <Span>Save</Span>
     </Button>
     <Button onPress={onRetry}>
-      <Label>Retry</Label>
+      <Span>Retry</Span>
     </Button>
     <Button onPress={onComplete}>
-      <Label>Done</Label>
+      <Span>Done</Span>
     </Button>
   </Wrapper>
 );

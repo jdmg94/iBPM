@@ -1,6 +1,7 @@
 import { Audio } from "expo-av";
 import { useTheme } from "@/hooks";
 import { Alert } from "react-native";
+import { Span, Label, Subtext } from "@/components/Text";
 import { BPMRecord } from "@/sections/History";
 import { prepareToPlay } from "@/AudioService";
 import { Feather as Icon } from "@expo/vector-icons";
@@ -9,15 +10,7 @@ import { formatDistanceToNow, fromUnixTime } from "date-fns";
 import { FC, useRef, useState, useEffect, useCallback } from "react";
 
 import ActionItem from "./Action";
-import {
-  Label,
-  Title,
-  Detail,
-  Column,
-  Wrapper,
-  Sublabel,
-  Subtitle,
-} from "./Item.styles";
+import { Detail, Column, Wrapper } from "./Item.styles";
 
 type HistoryItemProps = {
   data: BPMRecord;
@@ -164,14 +157,16 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
     >
       <Wrapper>
         <Column>
-          <Title>{data.label}</Title>
-          <Subtitle>
+          <Label>{data.label}</Label>
+          <Subtext>
             {formatDistanceToNow(fromUnixTime(data.timestamp))} ago
-          </Subtitle>
+          </Subtext>
         </Column>
         <Detail>
-          <Label>{data.bpm}</Label>
-          <Sublabel>BPM</Sublabel>
+          <Span fontSize={16}>{data.bpm}</Span>
+          <Span fontSize={14} fontWeight="bold">
+            BPM
+          </Span>
         </Detail>
       </Wrapper>
     </Swipeable>

@@ -32,8 +32,3 @@ export const Container = styled.View<{
 	justify-content: center;
 	background-color: ${props => props.color};
 `;
-
-export const Label = styled.Text`
-	font-size: 16px;
-	color: #fff;
-`;

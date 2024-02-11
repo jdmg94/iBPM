@@ -40,13 +40,6 @@ export const Button = styled.Pressable`
 	transition: 1s;
 `;
 
-export const Label = styled.Text`
-	font-weight: bold;
-	font-size: 20px;
-	color: #fff;
-	margin: 16px 0px;
-`;
-
 export const AdBanner = styled.View`
 	width: 100%;
 	flex: 1;

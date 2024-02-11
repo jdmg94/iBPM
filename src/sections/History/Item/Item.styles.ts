@@ -16,18 +16,6 @@ export const Column = styled.View`
 	flex-direction: column;
 `;
 
-export const Title = styled.Text`
-	font-size: 20px;
-	font-weight: 400;
-	color: ${props => props.theme.colors.text};
-`;
-
-export const Subtitle = styled.Text`
-	font-size: 14px;
-	font-weight: 200;	
-	color: ${props => props.theme.colors.text};
-`;
-
 export const Detail = styled.View`
 	height: 100%;
 	width: 60px;
@@ -36,16 +24,6 @@ export const Detail = styled.View`
 	justify-content: center;
 	background-color: ${props => props.theme.colors.accent};
 	border-radius: 8px;
-`;
-export const Label = styled.Text`
-	font-size: 16px;
-	color: ${props => props.theme.colors.text};
-`;
-
-export const Sublabel = styled.Text`
-	font-weight: bold;
-	font-size: 14px;
-	color: ${props => props.theme.colors.text};
 `;
 
 export const Separator = styled.View`

@@ -1,4 +1,5 @@
 import { Alert } from "react-native";
+import { Span } from "@/components/Text";
 import { useState, useEffect } from "react";
 import { getReadableId } from "@/utils/human-id";
 import { useDispatch, useSelector } from "@/hooks";
@@ -14,7 +15,6 @@ import {
   RecorderStatus as Status,
 } from "./Recorder.slice";
 import {
-  Label,
   Handle,
   Wrapper,
   Button,
@@ -77,7 +77,7 @@ const Recorder = () => {
       )}
       {status === Status.RECORDING && <RecordingLoader duration={duration} />}
       {status === Status.PROCESSING && <ProcessingLoader />}
-      <Label>
+      <Span margin={16} fontSize={20}>
         {
           {
             [Status.IDLE]: "",
@@ -87,7 +87,7 @@ const Recorder = () => {
             [Status.ERROR]: "Error",
           }[status]
         }
-      </Label>
+      </Span>
       {status === Status.DONE && (
         <Result
           bpm={result?.bpm}

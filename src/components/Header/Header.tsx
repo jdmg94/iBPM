@@ -1,5 +1,6 @@
 import { PropsWithChildren, CSSProperties } from "react";
-import { Container, Title } from "./Header.styles";
+import { Container } from "./Header.styles";
+import { Title } from '../Text'
 
 type HeaderProps = {
   left?: JSX.Element;

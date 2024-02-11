@@ -1,5 +1,5 @@
 import styled from "@emotion/native";
-import { useEffect, useRef, FC } from "react";
+import { useEffect, FC } from "react";
 import animation from "assets/recording.json";
 import LottieView from "lottie-react-native";
 import Animated, { useSharedValue, withTiming, Easing } from "react-native-reanimated";
@@ -35,7 +35,7 @@ export const RecordingLoader: FC<Loader> = ({ duration = 15000 }) => {
         source={animation}
         progress={progress}
         style={{
-          height: 120,
+          height: "100%",
           width: "95%",
         }}
       />

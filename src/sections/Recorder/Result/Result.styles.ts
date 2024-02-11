@@ -1,21 +1,5 @@
 import styled from '@emotion/native';
 
-export const Title = styled.Text`
-	font-weight: 200;
-	font-size: 80px;
-	color: ${props => props.theme.colors.text};
-`;
-export const Subtitle = styled.Text`
-	font-size: 64px;
-	font-weight: bold;
-	color: ${props => props.theme.colors.text};
-`;
-
-export const Label = styled.Text`
-	font-weight: 600;
-	color: ${props => props.theme.colors.text};
-`;
-
 export const Button = styled.Pressable`
 	height: 50px;
 	width: 70%;
@@ -35,7 +19,6 @@ export const TextGroup = styled.View`
 export const Wrapper = styled.View`
 	flex: 2;
 	width: 100%;
-	padding-top: 8px;
 	align-items: center;
 	justify-content: flex-start;
 	flex-direction: column;

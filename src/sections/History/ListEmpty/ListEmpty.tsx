@@ -1,5 +1,6 @@
 import Lottie from "lottie-react-native";
-import { Container, Label } from "./ListEmpty.styles";
+import { Subtext } from "@/components/Text";
+import { Container } from "./ListEmpty.styles";
 
 const ListEmpty = () => (
   <Container>
@@ -12,7 +13,9 @@ const ListEmpty = () => (
         width: "100%",
       }}
     />
-    <Label>No records found...</Label>
+    <Subtext textAlign="center" fontSize={21}>
+      No records found...
+    </Subtext>
   </Container>
 );
 

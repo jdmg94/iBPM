@@ -9,29 +9,6 @@ export const Container = styled(SafeAreaView)`
   background-color: ${props => props.theme.colors.background}
 `
 
-export const Title = styled.Text`
-	font-weight: 600;
-	font-size: 48px;
-	margin-left: 16px;
-	color: ${props => props.theme.colors.text};
-`;
-
-export const Label = styled.Text`
-  font-size: 20px;
-	margin:8px 0px;
-  color: ${props => props.theme.colors.text};
-`
-
-export const Span = styled.Text`	
-	${space}	
-	${typography}	
-  color: ${props => props.theme.colors.text};
-`
-
-export const Subtext = styled(Span)`
-color: ${props => props.theme.colors.subtext};
-`
-
 export const Row = styled.View` 
 	height: auto;	
 	min-height: 60px;	

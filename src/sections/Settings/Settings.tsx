@@ -1,11 +1,14 @@
 import { router } from "expo-router";
 import Header from "@/components/Header";
 import { Feather as Icon } from "@expo/vector-icons";
+import { Span, Subtext, Label } from "@/components/Text"
 import { useDispatch, useSelector, useTheme } from "@/hooks";
 import { RangeSlider, Slider } from "@react-native-assets/slider";
 import { Switch, Keyboard, TouchableWithoutFeedback } from "react-native";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
-import { Row, Span, Label, Input, Subtext, Container } from "./Settings.styles";
+
+import NumberInput from "./NumberInput";
+import { Row, Input, Container } from "./Settings.styles";
 import {
   setTheme,
   setMinBpm,
@@ -13,7 +16,6 @@ import {
   setDuration,
   setRecordingQuality,
 } from "./Settings.slice";
-import NumberInput from "./NumberInput";
 
 const Settings = () => {
   const theme = useTheme();

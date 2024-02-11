@@ -1,6 +1,7 @@
-import { humanId } from 'human-id';
+import { humanId } from 'human-id'
 
-export const getReadableId = () => humanId({
-  separator: '-',
-  capitalize: false,  
-});
+export const getReadableId = () =>
+  humanId({
+    separator: '-',
+    capitalize: false,
+  })

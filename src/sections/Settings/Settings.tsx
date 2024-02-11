@@ -1,33 +1,33 @@
-import { router } from "expo-router";
-import Header from "@/components/Header";
-import { Feather as Icon } from "@expo/vector-icons";
-import { Span, Subtext, Label } from "@/components/Text"
-import { useDispatch, useSelector, useTheme } from "@/hooks";
-import { RangeSlider, Slider } from "@react-native-assets/slider";
-import { Switch, Keyboard, TouchableWithoutFeedback } from "react-native";
-import SegmentedControl from "@react-native-segmented-control/segmented-control";
+import { router } from 'expo-router'
+import Header from '@/components/Header'
+import { Feather as Icon } from '@expo/vector-icons'
+import { Span, Subtext, Label } from '@/components/Text'
+import { useDispatch, useSelector, useTheme } from '@/hooks'
+import { RangeSlider, Slider } from '@react-native-assets/slider'
+import { Switch, Keyboard, TouchableWithoutFeedback } from 'react-native'
+import SegmentedControl from '@react-native-segmented-control/segmented-control'
 
-import NumberInput from "./NumberInput";
-import { Row, Input, Container } from "./Settings.styles";
+import NumberInput from './NumberInput'
+import { Row, Input, Container } from './Settings.styles'
 import {
   setTheme,
   setMinBpm,
   setMaxBpm,
   setDuration,
   setRecordingQuality,
-} from "./Settings.slice";
+} from './Settings.slice'
 
 const Settings = () => {
-  const theme = useTheme();
-  const dispatch = useDispatch();
-  const segments = ["Light", "Dark", "System"];
-  const maxBPM = useSelector((state) => state.Settings.maxBpm);
-  const minBPM = useSelector((state) => state.Settings.minBpm);
-  const themePref = useSelector((state) => state.Settings.theme);
-  const duration = useSelector((state) => state.Settings.duration);
+  const theme = useTheme()
+  const dispatch = useDispatch()
+  const segments = ['Light', 'Dark', 'System']
+  const maxBPM = useSelector((state) => state.Settings.maxBpm)
+  const minBPM = useSelector((state) => state.Settings.minBpm)
+  const themePref = useSelector((state) => state.Settings.theme)
+  const duration = useSelector((state) => state.Settings.duration)
   const recordingQuality = useSelector(
-    (state) => state.Settings.recordingQuality
-  );
+    (state) => state.Settings.recordingQuality,
+  )
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -48,7 +48,7 @@ const Settings = () => {
           <Label>Theme:</Label>
           <SegmentedControl
             values={segments}
-            style={{ width: "60%" }}
+            style={{ width: '60%' }}
             tintColor={theme.colors.segmentedControlAccent}
             selectedIndex={
               {
@@ -58,20 +58,20 @@ const Settings = () => {
               }[themePref] ?? 2
             }
             onChange={(evt) => {
-              const selectedIndex = evt.nativeEvent.selectedSegmentIndex;
-              const nextValue = segments[selectedIndex]?.toLowerCase();
-              dispatch(setTheme(nextValue));
+              const selectedIndex = evt.nativeEvent.selectedSegmentIndex
+              const nextValue = segments[selectedIndex]?.toLowerCase()
+              dispatch(setTheme(nextValue))
             }}
           />
         </Row>
         <Row justifyContent="space-between">
           <Label>High Quality Recording:</Label>
           <Switch
-            value={recordingQuality === "high"}
+            value={recordingQuality === 'high'}
             onValueChange={(value) => {
-              dispatch(setRecordingQuality(value ? "high" : "low"));
+              dispatch(setRecordingQuality(value ? 'high' : 'low'))
               if (Keyboard.isVisible()) {
-                Keyboard.dismiss();
+                Keyboard.dismiss()
               }
             }}
           />
@@ -83,9 +83,9 @@ const Settings = () => {
               value={duration}
               onChange={(value) => {
                 if (value >= 3000 && value <= 8000) {
-                  dispatch(setDuration(value));
+                  dispatch(setDuration(value))
                 } else {
-                  dispatch(setDuration(duration));
+                  dispatch(setDuration(duration))
                 }
               }}
             />
@@ -137,10 +137,10 @@ const Settings = () => {
           thumbTintColor={theme.colors.segmentedControlAccent}
           onValueChange={([nextMin, nextMax]) => {
             if (nextMin !== minBPM) {
-              dispatch(setMinBpm(nextMin));
+              dispatch(setMinBpm(nextMin))
             }
             if (nextMax !== maxBPM) {
-              dispatch(setMaxBpm(nextMax));
+              dispatch(setMaxBpm(nextMax))
             }
           }}
         />
@@ -151,7 +151,7 @@ const Settings = () => {
         </Subtext>
       </Container>
     </TouchableWithoutFeedback>
-  );
-};
+  )
+}
 
-export default Settings;
+export default Settings

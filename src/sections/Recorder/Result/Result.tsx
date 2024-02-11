@@ -1,13 +1,13 @@
-import { FC } from "react";
-import { Span } from "@/components/Text";
-import { Button, Wrapper, TextGroup } from "./Result.styles";
+import { FC } from 'react'
+import { Span } from '@/components/Text'
+import { Button, Wrapper, TextGroup } from './Result.styles'
 
 type ResultProps = {
-  bpm?: number;
-  onComplete: () => void;
-  onRetry: () => void;
-  onSave: () => void;
-};
+  bpm?: number
+  onComplete: () => void
+  onRetry: () => void
+  onSave: () => void
+}
 
 const Result: FC<ResultProps> = ({ bpm = 0, onComplete, onRetry, onSave }) => (
   <Wrapper>
@@ -29,6 +29,6 @@ const Result: FC<ResultProps> = ({ bpm = 0, onComplete, onRetry, onSave }) => (
       <Span>Done</Span>
     </Button>
   </Wrapper>
-);
+)
 
-export default Result;
+export default Result

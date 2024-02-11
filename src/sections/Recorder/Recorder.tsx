@@ -1,67 +1,62 @@
-import { Alert } from "react-native";
-import { Span } from "@/components/Text";
-import { useState, useEffect } from "react";
-import { getReadableId } from "@/utils/human-id";
-import { useDispatch, useSelector } from "@/hooks";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { Alert } from 'react-native'
+import { Span } from '@/components/Text'
+import { useState, useEffect } from 'react'
+import { getReadableId } from '@/utils/human-id'
+import { useDispatch, useSelector } from '@/hooks'
+import { PanGestureHandler } from 'react-native-gesture-handler'
 
-import Result from "./Result";
-import { addRecord } from "../History";
-import { useInteraction } from "./useInterations";
-import { RecordingLoader, ProcessingLoader } from "./Loaders";
+import Result from './Result'
+import { addRecord } from '../History'
+import { useInteraction } from './useInterations'
+import { RecordingLoader, ProcessingLoader } from './Loaders'
 import {
   updateStatus,
   captureRecording,
   RecorderStatus as Status,
-} from "./Recorder.slice";
-import {
-  Handle,
-  Wrapper,
-  Button,
-  ButtonOutline,
-} from "./Recorder.styles";
+} from './Recorder.slice'
+import { Handle, Wrapper, Button, ButtonOutline } from './Recorder.styles'
 
 const Recorder = () => {
-  const [id, setId] = useState(getReadableId());
-  const result = useSelector((state) => state.Recorder.data);
-  const status = useSelector((state) => state.Recorder.status);
-  const duration = useSelector((state) => state.Settings.duration);
+  const [id, setId] = useState(getReadableId())
+  const result = useSelector((state) => state.Recorder.data)
+  const status = useSelector((state) => state.Recorder.status)
+  const duration = useSelector((state) => state.Settings.duration)
 
-  const dispatch = useDispatch();
-  const { animation, verticalDrag } = useInteraction(status);
+  const dispatch = useDispatch()
+  const { animation, verticalDrag } = useInteraction(status)
   const addToHistory = () =>
     Alert.prompt(
-      "Save as",
+      'Save as',
       undefined,
       [
         {
-          text: "Save",
+          text: 'Save',
           onPress: (label) => {
             if (!label || label.length == 0) {
-              addToHistory();
+              addToHistory()
             } else if (result) {
-              dispatch(updateStatus(Status.IDLE));
+              dispatch(updateStatus(Status.IDLE))
               dispatch(
                 addRecord({
                   ...result,
                   label,
                   id,
-                })
-              );
+                }),
+              )
             }
           },
         },
-        { text: "Cancel", style: "cancel" },
+        { text: 'Cancel', style: 'cancel' },
       ],
-      "plain-text",
-      id
-    );
+      'plain-text',
+      id,
+    )
 
   useEffect(() => {
     if (status === Status.RECORDING) {
-      setId(getReadableId());
+      setId(getReadableId())
     }
-  }, [status]);
+  }, [status])
 
   return (
     <Wrapper style={animation}>
@@ -80,11 +75,11 @@ const Recorder = () => {
       <Span margin={16} fontSize={20}>
         {
           {
-            [Status.IDLE]: "",
-            [Status.RECORDING]: "Capturing Audio Sample",
-            [Status.PROCESSING]: "Detecting Beats",
-            [Status.DONE]: " Approximately:",
-            [Status.ERROR]: "Error",
+            [Status.IDLE]: '',
+            [Status.RECORDING]: 'Capturing Audio Sample',
+            [Status.PROCESSING]: 'Detecting Beats',
+            [Status.DONE]: ' Approximately:',
+            [Status.ERROR]: 'Error',
           }[status]
         }
       </Span>
@@ -97,7 +92,7 @@ const Recorder = () => {
         />
       )}
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Recorder;
+export default Recorder

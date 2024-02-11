@@ -1,30 +1,30 @@
-import { useState, useEffect } from "react";
-import { Input } from "./Settings.styles";
+import { useState, useEffect } from 'react'
+import { Input } from './Settings.styles'
 
 type NumberInputProps = {
-  value: number;
-  onChange: (value: number) => void;
-};
+  value: number
+  onChange: (value: number) => void
+}
 
 const NumberInput = ({ value: initialValue, onChange }: NumberInputProps) => {
-  const [value, setValue] = useState(`${initialValue}`);
+  const [value, setValue] = useState(`${initialValue}`)
 
   useEffect(() => {
     if (value.length > 0) {
-      const parsedValue = parseInt(value, 10);
+      const parsedValue = parseInt(value, 10)
       if (parsedValue > 0 && parsedValue !== initialValue) {
-        onChange(parsedValue);
+        onChange(parsedValue)
       } else if (value.length === 1) {
-        onChange(0);
+        onChange(0)
       }
     } else {
-      onChange(0);
+      onChange(0)
     }
-  }, [value]);
+  }, [value])
 
   useEffect(() => {
-    setValue(`${initialValue}`);
-  }, [initialValue]);
+    setValue(`${initialValue}`)
+  }, [initialValue])
 
   return (
     <Input
@@ -33,10 +33,10 @@ const NumberInput = ({ value: initialValue, onChange }: NumberInputProps) => {
       inputMode="numeric"
       value={value}
       onChangeText={(nextValue: string) => {
-        setValue(nextValue);
+        setValue(nextValue)
       }}
     />
-  );
-};
+  )
+}
 
-export default NumberInput;
+export default NumberInput

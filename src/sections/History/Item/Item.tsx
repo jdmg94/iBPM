@@ -1,22 +1,22 @@
-import { Audio } from "expo-av";
-import { useTheme } from "@/hooks";
-import { Alert } from "react-native";
-import { Span, Label, Subtext } from "@/components/Text";
-import { BPMRecord } from "@/sections/History";
-import { prepareToPlay } from "@/AudioService";
-import { Feather as Icon } from "@expo/vector-icons";
-import { Swipeable } from "react-native-gesture-handler";
-import { formatDistanceToNow, fromUnixTime } from "date-fns";
-import { FC, useRef, useState, useEffect, useCallback } from "react";
+import { Audio } from 'expo-av'
+import { useTheme } from '@/hooks'
+import { Alert } from 'react-native'
+import { Span, Label, Subtext } from '@/components/Text'
+import { BPMRecord } from '@/sections/History'
+import { prepareToPlay } from '@/AudioService'
+import { Feather as Icon } from '@expo/vector-icons'
+import { Swipeable } from 'react-native-gesture-handler'
+import { formatDistanceToNow, fromUnixTime } from 'date-fns'
+import { FC, useRef, useState, useEffect, useCallback } from 'react'
 
-import ActionItem from "./Action";
-import { Detail, Column, Wrapper } from "./Item.styles";
+import ActionItem from './Action'
+import { Detail, Column, Wrapper } from './Item.styles'
 
 type HistoryItemProps = {
-  data: BPMRecord;
-  onRemove: () => void;
-  onEdit: (updates: Partial<BPMRecord>) => void;
-};
+  data: BPMRecord
+  onRemove: () => void
+  onEdit: (updates: Partial<BPMRecord>) => void
+}
 
 enum PlayStatus {
   ERROR,
@@ -26,17 +26,17 @@ enum PlayStatus {
 }
 
 const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
-  const theme = useTheme();
-  const ref = useRef<Swipeable>(null);
-  const closeRow = () => ref.current?.close();
-  const [sample, setSample] = useState<Audio.Sound>();
-  const [status, updateStatus] = useState<PlayStatus>(PlayStatus.STOPPED);
+  const theme = useTheme()
+  const ref = useRef<Swipeable>(null)
+  const closeRow = () => ref.current?.close()
+  const [sample, setSample] = useState<Audio.Sound>()
+  const [status, updateStatus] = useState<PlayStatus>(PlayStatus.STOPPED)
 
   const disposeSound = () => {
     sample?.unloadAsync().then(() => {
-      setSample(undefined);
-    });
-  };
+      setSample(undefined)
+    })
+  }
 
   const initializeSound = useCallback(async function () {
     const buffer = await Audio.Sound.createAsync(
@@ -49,28 +49,28 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
       (statusUpdate) => {
         if (!statusUpdate.isLoaded) {
           if (statusUpdate.error) {
-            updateStatus(PlayStatus.ERROR);
+            updateStatus(PlayStatus.ERROR)
           }
         } else {
           if (statusUpdate.isPlaying) {
-            updateStatus(PlayStatus.PLAYING);
+            updateStatus(PlayStatus.PLAYING)
           } else if (!statusUpdate.didJustFinish) {
-            updateStatus(PlayStatus.PAUSED);
+            updateStatus(PlayStatus.PAUSED)
           } else {
-            updateStatus(PlayStatus.STOPPED);
+            updateStatus(PlayStatus.STOPPED)
           }
         }
-      }
-    );
+      },
+    )
 
-    setSample(buffer.sound);
-  }, []);
+    setSample(buffer.sound)
+  }, [])
 
   useEffect(() => {
     if (sample && status === PlayStatus.STOPPED) {
-      closeRow();
+      closeRow()
     }
-  }, [status, sample]);
+  }, [status, sample])
 
   return (
     <Swipeable
@@ -90,7 +90,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               }),
             },
           ],
-        };
+        }
 
         return (
           <>
@@ -99,8 +99,8 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               color={theme.colors.delete}
               label={<Icon name="trash-2" size={24} color="#FFF" />}
               onPress={() => {
-                closeRow();
-                setTimeout(onRemove, 350);
+                closeRow()
+                setTimeout(onRemove, 350)
               }}
             />
             <ActionItem
@@ -109,25 +109,25 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
               label={<Icon name="edit-3" size={24} color="#FFF" />}
               onPress={() => {
                 Alert.prompt(
-                  "Rename",
+                  'Rename',
                   undefined,
                   [
                     {
-                      text: "Save",
+                      text: 'Save',
                       onPress: (label) => {
-                        onEdit({ label });
-                        closeRow();
+                        onEdit({ label })
+                        closeRow()
                       },
                     },
                     {
-                      text: "Cancel",
-                      style: "cancel",
+                      text: 'Cancel',
+                      style: 'cancel',
                       onPress: () => closeRow(),
                     },
                   ],
                   undefined,
-                  data.label
-                );
+                  data.label,
+                )
               }}
             />
             <ActionItem
@@ -137,22 +137,22 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
                 <Icon
                   size={24}
                   color="#FFF"
-                  name={status === PlayStatus.PLAYING ? "pause" : "play"}
+                  name={status === PlayStatus.PLAYING ? 'pause' : 'play'}
                 />
               }
               onPress={() => {
                 if (status === PlayStatus.PLAYING) {
-                  sample?.pauseAsync();
+                  sample?.pauseAsync()
                 }
                 if (status === PlayStatus.PAUSED) {
                   prepareToPlay().then(() => {
-                    sample?.playAsync();
-                  });
+                    sample?.playAsync()
+                  })
                 }
               }}
             />
           </>
-        );
+        )
       }}
     >
       <Wrapper>
@@ -170,7 +170,7 @@ const HistoryItem: FC<HistoryItemProps> = ({ data, onRemove, onEdit }) => {
         </Detail>
       </Wrapper>
     </Swipeable>
-  );
-};
+  )
+}
 
-export default HistoryItem;
+export default HistoryItem

@@ -1,24 +1,24 @@
-import { Link } from "expo-router";
-import { useTheme } from "@/hooks";
-import { FlatList } from "react-native";
-import Header from "@/components/Header";
-import { BPMRecord } from "@/sections/History";
-import { useDispatch, useSelector } from "@/hooks";
-import { Feather as Icon } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Link } from 'expo-router'
+import { useTheme } from '@/hooks'
+import { FlatList } from 'react-native'
+import Header from '@/components/Header'
+import { BPMRecord } from '@/sections/History'
+import { useDispatch, useSelector } from '@/hooks'
+import { Feather as Icon } from '@expo/vector-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import ListEmpty from "./ListEmpty";
-import Item, { Separator } from "./Item";
-import { updateRecord, removeRecord } from "./History.slice";
+import ListEmpty from './ListEmpty'
+import Item, { Separator } from './Item'
+import { updateRecord, removeRecord } from './History.slice'
 
 const History = () => {
-  const theme = useTheme();
-  const dispatch = useDispatch();
-  const insets = useSafeAreaInsets();
-  const data = useSelector((state) => state.History.data);
-  const deleteItem = (id: string) => () => dispatch(removeRecord(id));
+  const theme = useTheme()
+  const dispatch = useDispatch()
+  const insets = useSafeAreaInsets()
+  const data = useSelector((state) => state.History.data)
+  const deleteItem = (id: string) => () => dispatch(removeRecord(id))
   const editItem = (id: string) => (updates: Partial<BPMRecord>) =>
-    dispatch(updateRecord({ id, updates }));
+    dispatch(updateRecord({ id, updates }))
 
   return (
     <FlatList
@@ -51,7 +51,7 @@ const History = () => {
         backgroundColor: theme.colors.background,
       }}
     />
-  );
-};
+  )
+}
 
-export default History;
+export default History

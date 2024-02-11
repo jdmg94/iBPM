@@ -14,29 +14,29 @@ const initialState: SettingsState = {
   duration: 5000,
   theme: 'system',
   recordingQuality: 'high',
-};
+}
 
 const settingsSlice = createSlice({
-  name: "Settings",
+  name: 'Settings',
   initialState,
   reducers: {
     setMinBpm: (state, action) => {
-      state.minBpm = action.payload;
+      state.minBpm = action.payload
     },
     setMaxBpm: (state, action) => {
-      state.maxBpm = action.payload;
+      state.maxBpm = action.payload
     },
     setDuration: (state, action: PayloadAction<number>) => {
-      state.duration = action.payload;
+      state.duration = action.payload
     },
     setTheme: (state, action) => {
-      state.theme = action.payload;
+      state.theme = action.payload
     },
     setRecordingQuality: (state, action) => {
-      state.recordingQuality = action.payload;
-    }
-  }
-});
+      state.recordingQuality = action.payload
+    },
+  },
+})
 
 export const {
   setTheme,
@@ -44,5 +44,5 @@ export const {
   setMaxBpm,
   setDuration,
   setRecordingQuality,
-} = settingsSlice.actions;
-export default settingsSlice.reducer;
+} = settingsSlice.actions
+export default settingsSlice.reducer

@@ -8,7 +8,7 @@ import { Switch, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import SegmentedControl from '@react-native-segmented-control/segmented-control'
 
 import NumberInput from './NumberInput'
-import { Row, Input, Container } from './Settings.styles'
+import { Row, Input, Container, Endpiece } from './Settings.styles'
 import {
   setTheme,
   setMinBpm,
@@ -105,7 +105,7 @@ const Settings = () => {
           onValueChange={(nextValue) => dispatch(setDuration(nextValue))}
         />
         <Row justifyContent="space-between">
-          <Label>Detection Range:</Label>
+          <Label>Dynamic Range:</Label>
           <Row>
             <Input
               editable={false}
@@ -149,6 +149,11 @@ const Settings = () => {
           BPM, the more probability of 2x-BPM errors (e.g. if max BPM = 210 and
           real tempo of a song 102 BPM, in the end you can get 204 BPM).
         </Subtext>
+        <Endpiece>
+          <Span fontSize={24}>
+            🇭🇳
+          </Span>
+        </Endpiece>
       </Container>
     </TouchableWithoutFeedback>
   )

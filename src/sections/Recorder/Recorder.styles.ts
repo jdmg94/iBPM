@@ -1,4 +1,5 @@
 import styled from '@emotion/native'
+import { space } from 'styled-system'
 import Animated from 'react-native-reanimated'
 
 export const Wrapper = styled(Animated.View)`
@@ -12,6 +13,7 @@ export const Wrapper = styled(Animated.View)`
   max-width: 400px;
   border-radius: 24px 24px 0px 0px;
   background-color: ${(props) => props.theme.colors.accent};
+  ${space}
 `
 
 export const Handle = styled(Animated.View)`

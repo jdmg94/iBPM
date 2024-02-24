@@ -324,6 +324,7 @@
 			baseConfigurationReference = 6C2E3173556A471DD304B334 /* Pods-iBPM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iBPM/iBPM.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -334,6 +335,8 @@
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = iBPM/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = iBPM;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -361,11 +364,14 @@
 			baseConfigurationReference = 7A4D352CD337FB3A3BF06240 /* Pods-iBPM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iBPM/iBPM.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6PECK4ZXL3;
 				INFOPLIST_FILE = iBPM/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = iBPM;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

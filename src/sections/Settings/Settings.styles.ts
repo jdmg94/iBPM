@@ -5,6 +5,7 @@ import { flexbox, layout, space, typography } from 'styled-system'
 export const Container = styled(SafeAreaView)`
   flex: 1;
   padding: 8px;
+  flex-direction: column;
   justify-content: flex-start;
   background-color: ${(props) => props.theme.colors.background};
 `
@@ -28,4 +29,9 @@ export const Input = styled.TextInput`
   border-radius: 4px;
   color: ${(props) => props.theme.colors.text};
   background-color: ${(props) => props.theme.colors.accent};
+`
+export const Endpiece = styled.View`
+ flex: 1;
+ align-self: center;
+ justify-content: flex-end;
 `

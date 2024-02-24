@@ -1,4 +1,4 @@
-import { Alert } from 'react-native'
+import { Alert, Dimensions } from 'react-native'
 import { Span } from '@/components/Text'
 import { useState, useEffect } from 'react'
 import { getReadableId } from '@/utils/human-id'
@@ -17,6 +17,7 @@ import {
 import { Handle, Wrapper, Button, ButtonOutline } from './Recorder.styles'
 
 const Recorder = () => {
+  const { width } = Dimensions.get('window')
   const [id, setId] = useState(getReadableId())
   const result = useSelector((state) => state.Recorder.data)
   const status = useSelector((state) => state.Recorder.status)
@@ -59,7 +60,7 @@ const Recorder = () => {
   }, [status])
 
   return (
-    <Wrapper style={animation}>
+    <Wrapper width={width} style={animation}>
       {status === Status.DONE && (
         <PanGestureHandler onGestureEvent={verticalDrag}>
           <Handle hitSlop={{ top: 20, bottom: 50, left: 150, right: 150 }} />

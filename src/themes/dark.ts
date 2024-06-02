@@ -9,6 +9,7 @@ const theme: Theme = {
     delete: '#ff5964A1',
     info: '#35a7ffA1',
     success: '#6bf178A1',
+    warning: '#FFD500A1',
     segmentedControlAccent: '#d90429',
   },
   spacing: {

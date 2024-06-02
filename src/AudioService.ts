@@ -155,3 +155,30 @@ export const determineBPM = (
 
     sound.playAsync()
   })
+
+export const getLinearPCMData = (
+  sound: Audio.Sound): Promise<number[]> =>
+  new Promise((resolve, reject) => {
+    const linearPCMData: number[] = []
+    const timeoutRef = setTimeout(() => {
+      reject('No information could be collected from sample')
+    }, 3000)
+
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if (status.isLoaded && status.didJustFinish) {
+        clearTimeout(timeoutRef)
+        if (linearPCMData.length > 0) {
+          sound.unloadAsync()
+          resolve(linearPCMData)
+        } else {
+          reject('No information could be collected from sample')
+        }
+      }
+    })
+
+    sound.setOnAudioSampleReceived((sample) => {
+      linearPCMData.push(...sample.channels[0].frames)
+    })
+
+    sound.playAsync()
+  })

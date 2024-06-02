@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Platform } from 'react-native'
+import { Platform, Dimensions } from 'react-native'
 import {
   withSpring,
   useSharedValue,
@@ -8,14 +8,20 @@ import {
 } from 'react-native-reanimated'
 import { RecorderStatus as Status } from './Recorder.slice'
 
-const initialOffset = Platform.select({
-  android: 340,
-  ios: 360,
-})!
+const calculateOffsets = () => {
+  const screen = Dimensions.get("window")
+  const initialOffset = screen.height * 0.43; 
+  let workingOffset = screen.height * 0.25;
 
-const workingOffset = 270
+  if (screen.height > 800) {
+    workingOffset = screen.height * 0.30;  
+  }
+
+  return [initialOffset, workingOffset]
+}
 
 export const useInteraction = (status: Status) => {
+  const [initialOffset, workingOffset] = calculateOffsets()
   const translateY = useSharedValue(initialOffset)
   const isDrawerOpen = useSharedValue(false)
   const animation = useAnimatedStyle(() => {

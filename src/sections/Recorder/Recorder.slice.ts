@@ -1,11 +1,12 @@
 import { format, getUnixTime } from 'date-fns'
+import musicTempo from '@superiortech/music-tempo'
 import type { BPMRecord } from '@/sections/History'
 import { SettingsState } from '@/sections/Settings'
 import { documentDirectory, moveAsync } from 'expo-file-system'
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import {
   prepareToRecord,
-  determineBPM,
+  getLinearPCMData,
   captureAudioSample,
 } from '@/AudioService'
 
@@ -52,6 +53,7 @@ export const captureRecording = createAsyncThunk<
       Settings: SettingsState
     }
   }
+// @ts-ignore #FIX: figure out the types for the toolbox parameter
 >('Recorder/capture', async (id, { getState, dispatch }) => {
   await prepareToRecord()
 
@@ -61,10 +63,13 @@ export const captureRecording = createAsyncThunk<
   dispatch(updateStatus(RecorderStatus.RECORDING))
   const { uri, sound } = await captureAudioSample(duration, recordingQuality)
   dispatch(updateStatus(RecorderStatus.PROCESSING))
-  const tempo = await determineBPM(sound, {
+
+  const linearPCM = await getLinearPCMData(sound)
+  const { tempo } = musicTempo(linearPCM, {
     minBeatInterval: 60 / maxBpm,
     maxBeatInterval: 60 / minBpm,
   })
+
   dispatch(updateStatus(RecorderStatus.DONE))
   // optimistically move, don't await
   moveAsync({

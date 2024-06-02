@@ -9,7 +9,7 @@ type ResultProps = {
   onSave: () => void
 }
 
-const Result: FC<ResultProps> = ({ bpm = 0, onComplete, onRetry, onSave }) => (
+const Result: FC<ResultProps> = ({ bpm = 130, onComplete, onRetry, onSave }) => (
   <Wrapper>
     <TextGroup>
       <Span fontWeight={200} fontSize={80}>

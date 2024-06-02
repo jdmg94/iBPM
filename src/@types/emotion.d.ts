@@ -7,6 +7,7 @@ type Colors =
   | 'background'
   | 'delete'
   | 'info'
+  | 'warning'
   | 'success'
   | 'segmentedControlAccent'
 type Spacing = 'header'

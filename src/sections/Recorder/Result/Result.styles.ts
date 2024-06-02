@@ -3,7 +3,7 @@ import styled from '@emotion/native'
 export const Button = styled.Pressable`
   height: 50px;
   width: 70%;
-  border-radius: 50%;
+  border-radius: 16px;
   border: solid 2px ${(props) => props.theme.colors.text};
   align-items: center;
   justify-content: center;

@@ -20,11 +20,6 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "infoPlist": {
-        "UIBackgroundModes": [
-          "audio"
-        ]
-      },
       "bundleIdentifier": "co.superiortech.ibpm"
     },
     "android": {
@@ -41,7 +36,8 @@
       "tsconfigPaths": true
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ]
   }
 }

@@ -10,6 +10,8 @@ import {
   captureAudioSample,
 } from '@/AudioService'
 
+const sleep = (timeout: number) => new Promise((resolve) => setTimeout(resolve, timeout))
+
 export enum RecorderStatus {
   IDLE,
   RECORDING,
@@ -63,7 +65,7 @@ export const captureRecording = createAsyncThunk<
   dispatch(updateStatus(RecorderStatus.RECORDING))
   const { uri, sound } = await captureAudioSample(duration, recordingQuality)
   dispatch(updateStatus(RecorderStatus.PROCESSING))
-
+  await sleep(100)
   const linearPCM = await getLinearPCMData(sound)
   const { tempo } = musicTempo(linearPCM, {
     minBeatInterval: 60 / maxBpm,
@@ -86,6 +88,6 @@ export const captureRecording = createAsyncThunk<
     label,
     uri: to,
     timestamp,
-    bpm: tempo,
+    bpm: Math.floor(tempo),
   }
 })
